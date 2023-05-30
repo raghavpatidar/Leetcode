@@ -12,27 +12,63 @@
 |                                                                                        |
 └────────────────────────────────────────────────────────────────────────────────────────┘
 
-// Prob : https://leetcode.com/problems/top-k-frequent-elements/submissions/955262604/
-// Day : 380
+Problem : https://leetcode.com/problems/design-hashset/submissions/
+Day : 388
 */
 
 #include<bits/stdc++.h>
 using namespace std;
-class Solution {
+
+class MyHashSet {
 public:
-    vector<int> topKFrequent(vector<int>& nums, int k) {
-        map<int, int> m;
-        for (auto i : nums)m[i]++;
-        priority_queue <pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>> > q;
-        for (auto i : m) {
-            q.push({ i.second , i.first });
-            if (q.size() > k)q.pop();
-        }
-        vector<int> ans;
-        while (q.size() > 0) {
-            ans.push_back(q.top().second);
-            q.pop();
-        }
-        return ans;
+    vector<bool>m;
+    MyHashSet() {
+        m.resize(1000005);
+    }
+
+    void add(int key) {
+        m[key] = 1;
+    }
+
+    void remove(int key) {
+        m[key] = 0;
+    }
+
+    bool contains(int key) {
+        return m[key];
     }
 };
+
+/**
+ * Your MyHashSet object will be instantiated and called as such:
+ * MyHashSet* obj = new MyHashSet();
+ * obj->add(key);
+ * obj->remove(key);
+ * bool param_3 = obj->contains(key);
+ */class MyHashSet {
+ public:
+     vector<bool>m;
+     MyHashSet() {
+         m.resize(1000005);
+     }
+
+     void add(int key) {
+         m[key] = 1;
+     }
+
+     void remove(int key) {
+         m[key] = 0;
+     }
+
+     bool contains(int key) {
+         return m[key];
+     }
+ };
+
+ /**
+  * Your MyHashSet object will be instantiated and called as such:
+  * MyHashSet* obj = new MyHashSet();
+  * obj->add(key);
+  * obj->remove(key);
+  * bool param_3 = obj->contains(key);
+  */

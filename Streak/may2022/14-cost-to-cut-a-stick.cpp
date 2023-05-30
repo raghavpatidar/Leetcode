@@ -13,7 +13,7 @@
 └────────────────────────────────────────────────────────────────────────────────────────┘
 
 Problem : https://leetcode.com/problems/minimum-cost-to-cut-a-stick/description/
-Day :
+Day : 386
 */
 
 #include<bits/stdc++.h>
