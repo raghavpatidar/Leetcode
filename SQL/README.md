@@ -1,3 +1,11 @@
+# Daily SQL problem June .
+
+- [Daily SQL problem June .](#daily-sql-problem-june-)
+- [Day 1](#day-1)
+  - [175.  Combine Two Tables](#175--combine-two-tables)
+  - [181. Employees Earning More Than Their Managers](#181-employees-earning-more-than-their-managers)
+
+
 
 # Day 1
 ## [175.  Combine Two Tables](https://leetcode.com/problems/combine-two-tables/) 
@@ -37,3 +45,49 @@ Each row of this table contains information about the city and state of one pers
 ```sql
 select firstName, lastName , city , state from Person as p left join Address as a on p.personId = a.personId;
 ```
+
+
+
+## [181. Employees Earning More Than Their Managers](https://leetcode.com/problems/employees-earning-more-than-their-managers/)
+<h4>Write an SQL query to find the employees who earn more than their managers.
+Return the result table in any order.The query result format is in the following example.</h4>
+<details>
+<summary>Schema</summary>
+
+```text
+Table:  Employee
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| name        | varchar |
+| salary      | int     |
+| managerId   | int     |
++-------------+---------+
+id is the primary key column for this table.
+Each row of this table indicates the ID of an employee, their name, salary, and the ID of their manager.
+```
+</details>
+
+<code >Query</code>
+```sql
+select e.name as Employee from employee as e inner join employee as m on e.managerId = m.id and e.salary > m.salary;
+```
+
+
+<!-- ## [Question name]()
+<h4> Problem statement
+</h4>
+<details>
+<summary>Schema</summary>
+
+```text
+schema
+```
+</details>
+
+<code >Query</code>
+```sql
+query
+``` -->
