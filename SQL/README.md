@@ -4,6 +4,9 @@
 - [Day 1](#day-1)
   - [175.  Combine Two Tables](#175--combine-two-tables)
   - [181. Employees Earning More Than Their Managers](#181-employees-earning-more-than-their-managers)
+- [Day 2](#day-2)
+  - [182. Duplicate Emails](#182-duplicate-emails)
+  - [ 183. Customers Who Never Order](#-183-customers-who-never-order)
 
 
 
@@ -46,6 +49,7 @@ Each row of this table contains information about the city and state of one pers
 select firstName, lastName , city , state from Person as p left join Address as a on p.personId = a.personId;
 ```
 
+<br>
 
 
 ## [181. Employees Earning More Than Their Managers](https://leetcode.com/problems/employees-earning-more-than-their-managers/)
@@ -74,10 +78,10 @@ Each row of this table indicates the ID of an employee, their name, salary, and 
 ```sql
 select e.name as Employee from employee as e inner join employee as m on e.managerId = m.id and e.salary > m.salary;
 ```
+<br>
+<br>
 
 
-<!-- ## [Question name]()
-<h4> Problem statement
 # Day 2
 ## [182. Duplicate Emails](https://leetcode.com/problems/duplicate-emails/description/)
 <h4>Write an SQL query to report all the duplicate emails. Note that it's guaranteed that the email field is not NULL.
@@ -108,6 +112,64 @@ GROUP BY  email
 having count(email) > 1;
 ```
 <br>
+
+## [ 183. Customers Who Never Order](https://leetcode.com/problems/customers-who-never-order/description/)
+<h4> Write an SQL query to report all customers who never order anything.
+Return the result table in any order.
+The query result format is in the following example.
+</h4>
+<details>
+<summary>Schema</summary>
+
+```text
+Table: Customers
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| name        | varchar |
++-------------+---------+
+id is the primary key column for this table.
+Each row of this table indicates the ID and name of a customer.
+ 
+
+Table: Orders
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| customerId  | int  |
++-------------+------+
+id is the primary key column for this table.
+customerId is a foreign key of the ID from the Customers table.
+Each row of this table indicates the ID of an order and the ID of the customer who ordered it.
+ 
+```
+</details>
+
+<code >Query</code>
+```sql
+# sub query
+select name as Customers from Customers where id Not in (select Distinct customerId from Orders);
+
+# left join
+
+select name as Customers
+from Customers as c
+left join 
+Orders as o 
+on c.id = o.customerId 
+where o.id is null;
+```
+<br>
+<br>
+
+
+ <!-- # Day 2
+## [Question ]()
+<h4> Problem 
 </h4>
 <details>
 <summary>Schema</summary>
@@ -120,4 +182,4 @@ schema
 <code >Query</code>
 ```sql
 query
-``` -->
+```  -->
