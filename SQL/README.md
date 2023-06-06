@@ -2,16 +2,16 @@
 
 - [Daily SQL problem June .](#daily-sql-problem-june-)
 - [Day 1](#day-1)
-  - [175.  Combine Two Tables](#175--combine-two-tables)
+  - [175. Combine Two Tables](#175-combine-two-tables)
   - [181. Employees Earning More Than Their Managers](#181-employees-earning-more-than-their-managers)
 - [Day 2](#day-2)
   - [182. Duplicate Emails](#182-duplicate-emails)
-  - [ 183. Customers Who Never Order](#-183-customers-who-never-order)
+  - [183. Customers Who Never Order](#183-customers-who-never-order)
 
 
 
 # Day 1
-## [175.  Combine Two Tables](https://leetcode.com/problems/combine-two-tables/) 
+## [175. Combine Two Tables](https://leetcode.com/problems/combine-two-tables/) 
 <h4> Write an SQL query to report the first name, last name, city, and state of each person in the <code>Person</code> table. If the address of a personId is not present in the <code>Address</code>  table, report null instead.
 </h4>
 <details><summary>Schema</summary>
@@ -113,7 +113,7 @@ having count(email) > 1;
 ```
 <br>
 
-## [ 183. Customers Who Never Order](https://leetcode.com/problems/customers-who-never-order/description/)
+## [183. Customers Who Never Order](https://leetcode.com/problems/customers-who-never-order/description/)
 <h4> Write an SQL query to report all customers who never order anything.
 Return the result table in any order.
 The query result format is in the following example.
