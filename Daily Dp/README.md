@@ -1,3 +1,14 @@
+# Daily DP problem June 2023 .
+
+# Table of Content
+
+
+- [Daily DP problem June 2023 .](#daily-dp-problem-june-2023-)
+- [Table of Content](#table-of-content)
+- [Day 1](#day-1)
+  - [940. Distinct Subsequences II](#940-distinct-subsequences-ii)
+  - [Dice Throws](#dice-throws)
+
 
 
 # Day 1
@@ -47,3 +58,123 @@ public:
 </details>
 
 <br>
+
+## [Dice Throws](https://www.codingninjas.com/codestudio/problems/dice-throws_799924?leftPanelTab=0) 
+<h4>
+You are given D dice, each having F faces numbered 1 to F, both inclusive. The task is to find the possible number of ways to roll the dice together such that the sum of face-up numbers equal the given target S.
+Return ans to modulo <code>1e9 + 7</code> .
+</h4>
+<code >Logic</code>
+
+```text
+1. Recursion    : Simple recursion with target sum approach our targeet is total sum and 
+                  for each dice we have 1 to F option.
+                  TC = O(2^N)  SC = O(N)
+
+2. Memoization  : dp[i][j] -->number of ways  for ith dice have jth sum
+                  Tc =O(N*N)   SC = O(N) + O(N*N)
+
+3. Tabulation   : Remove Recursive Stack complexity
+                  Tc =O(N*N)   SC = O(N*N)
+
+4. Space Optimal: As we can see that we need only previous row dp[i-1] for our ith 
+                  calculation so we can reomve our 2D dp and use prev  and curr 1D array
+                  TC = O(N*N)  SC = O(2*N)
+                      
+```
+<details><summary>code - Memoization</summary> 
+
+```cpp
+#include <bits/stdc++.h>
+
+int solve(int idx  , int face , int target , vector<vector<int>>& dp , int mod ){
+    
+    if(idx == 0 and target == 0 )return 1;
+    if(target == 0 || idx == 0 )return 0;
+    if(dp[idx][target] != -1)return dp[idx][target];
+    int cnt = 0;
+    for(int j = 1 ; j<= face ; j++){
+        if( target >= j ){
+           cnt = ( cnt%mod +  solve(idx - 1 , face, target - j , dp, mod)%mod )%mod;
+        }
+    }
+    return dp[idx][target] = cnt%mod;
+}
+int diceThrows(int d, int f, int s) {
+    vector<vector<int>> dp(d +1 , vector<int>(s +1 , -1));
+    int mod = 1e9+7;
+    return solve(d , f , s  , dp , mod)%mod;
+}
+```
+</details>
+<details><summary>code - Tabulation</summary> 
+
+```cpp
+#include <bits/stdc++.h>
+int diceThrows(int d, int f, int s) {
+    vector<vector<int>> dp(d +1 , vector<int>(s +1 , -1));
+    int mod = 1e9+7;
+    for(int i = 0 ;i <= d ; i++)dp[i][0] = 0;
+    for(int j = 0; j <= s ; j++ )dp[0][j] = 0;
+    dp[0][0] = 1;
+    for (int i = 1; i <= d; i++) {
+      for (int j = 1; j <= s; j++) {
+            int cnt = 0;
+            for(int k = 1 ; k<= f ; k++){
+                if( j >= k ){
+                cnt = ( cnt%mod +  dp[i - 1][j - k] )%mod;
+                }
+            }
+            dp[i][j] = cnt%mod;
+      }
+    }
+    return dp[d][s]%mod;
+}
+```
+</details>
+<details><summary>code- Space Optimization</summary> 
+
+```cpp
+int diceThrows(int d, int f, int s) {
+    int mod = 1e9+7;
+    vector<int> prev(s+1 , 0) , curr(s+1 , 0);
+    for(int j = 0; j <= s ; j++ )prev[j] = 0;
+    prev[0] = 1;
+    for (int i = 1; i <= d; i++) {
+        curr[0] = 0;
+      for (int j = 1; j <= s; j++) {
+            int cnt = 0;
+            for(int k = 1 ; k<= f ; k++){
+                if( j >= k ){
+                cnt = ( cnt%mod +  prev[j - k] )%mod;
+                }
+            }
+          curr[j] = cnt%mod;
+      }
+      prev = curr;
+    }
+    return prev[s]%mod;   
+}
+```
+</details>
+<br>
+
+<!-- # Day 
+## []() 
+<h4>
+Statement
+</h4>
+<code >Logic</code>
+
+```text
+Logic
+```
+<details><summary>code</summary>
+
+```cpp
+Code
+```
+</details>
+<br> 
+
+-->
