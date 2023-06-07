@@ -10,6 +10,7 @@
   - [Dice Throws](#dice-throws)
 - [Day 2](#day-2)
   - [486. Predict the Winner / Optimal Game Streatgy](#486-predict-the-winner--optimal-game-streatgy)
+  - [221. Maximal Square](#221-maximal-square)
 
 
 
@@ -227,6 +228,124 @@ public:
 <br> 
 
 
+
+## [221. Maximal Square](https://leetcode.com/problems/maximal-square/description/) 
+<h4>
+Given an m x n binary matrix filled with 0's and 1's, find the largest <code>square</code>  containing only 1's and return its area.
+</h4>
+<code >Logic</code>
+
+```text
+Approach 1 : dp[i][j] --> max length of square at i,j and stores it length
+        case 1: i ==0 then we are at first row so max length is one if matrix[0][j] = 1 i.e dp[0][j]= matrix[0][j]
+        case 2: j ==0 then we are at first col so max length is one if matrix[i][0] = 1 i.e dp[i][j]= matrix[i][0]
+        case 3: matrix[i][j] = 0  means current index we don't have any square i.e dp[i][j] = 0
+        case 4: matrix[i][j] = 1  measn we can have square of and it's max len is Min( dp[i-1][j-1] , dp[i-1][j-1] , dp[i][j-1]) +1
+                such that it's min of it's uper square , previous back square od digonal left up
+        we can take max of all dp[i][j] and return it's area as square of side*side
+
+Approach 2 : Think of  Aream of Histrogram we can think each layers as histroger of top of it
+             dp[i][j] histogram at ith row and jth value 
+             dp[i] each row 
+             if matrix[i][j] = 1  then dp[i][j]= dp[i-1][j]
+             else dp[i][j] = 0
+             ans = max(ans , AreaHitogram(dp[i]));
+```
+[Code Link](./02-Maximal-Square.cpp)
+<details><summary>Approach 1 code</summary>
+
+```cpp
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        int n = matrix.size(), m = matrix[0].size() , ans = 0;
+        vector<vector<int>> dp(n , vector<int>(m, 0));
+        for(int i= 0; i < n ; i++){
+            for(int j= 0; j < m ; j++){
+                if(i == 0 || j ==0 || matrix[i][j] =='0') dp[i][j] = matrix[i][j] -'0';
+                else {
+                   dp[i][j] = min({dp[i-1][j-1] , dp[i][j-1] , dp[i-1][j]})+1;
+                }
+                ans = max(ans , dp[i][j]);
+            }
+        }
+        return ans*ans;
+
+    }
+};
+```
+</details>
+<details><summary>Approach 2 code</summary>
+
+```cpp
+class Solution {
+public:
+    vector<int> nsl(vector<int>v){
+        stack<int>st;
+        vector<int> ans;
+        for(int i = 0; i < v.size() ; i++){
+            if(st.size()>0){
+                while(st.size()>0 and v[st.top()] >= v[i])st.pop();
+                if(st.size() == 0)ans.push_back(-1);
+                else ans.push_back(st.top());
+            }else{
+                ans.push_back(-1);
+            }
+            st.push(i);
+        }
+        return ans;
+    }
+    vector<int> nsr(vector<int>v){
+        stack<int>st;
+        vector<int> ans;
+        int n = v.size();
+        for(int i = v.size()-1; i >= 0 ; i--){
+            if(st.size()>0){
+                while(st.size()>0 and v[st.top()] >= v[i])st.pop();
+                if(st.size() == 0)ans.push_back(n);
+                else ans.push_back(st.top());
+            }else{
+                ans.push_back(n);
+            }
+            st.push(i);
+        }
+        reverse(ans.begin() , ans.end());
+        return ans;
+    }
+
+    int maxHistogram(vector<int> v){
+        vector<int>left = nsl(v);
+        vector<int>right = nsr(v);
+        int ans = 0;
+        for(int i = 0; i < v.size() ; i++){
+            int w = (right[i] - left[i] - 1 );
+            int h =v[i];
+            int area = min(h , w) * min(h , w);
+            ans = max(ans , area);
+        }
+        return ans;
+    }
+    int maximalSquare(vector<vector<char>>& matrix) {
+        int n = matrix.size();
+        int m = matrix[0].size();
+        vector<vector<int>>dp(n , vector<int>(m , 0));
+        for(int j = 0; j < m ; j++)dp[0][j] = matrix[0][j] - '0';
+        int ans = maxHistogram(dp[0]);
+        for(int i = 1; i < n ; i++){
+            for(int j = 0; j < m ;j++){
+                if(matrix[i][j] == '0' )dp[i][j] = 0;
+                else dp[i][j] = dp[i-1][j] +1;
+            }
+            ans = max(ans ,maxHistogram(dp[i]));
+        }
+        return ans;
+    }
+};
+```
+</details>
+<br> 
+
+
 <!-- # Day 
 ## []() 
 <h4>
@@ -237,6 +356,7 @@ Statement
 ```text
 Logic
 ```
+[Code Link]()
 <details><summary>code</summary>
 
 ```cpp
