@@ -16,9 +16,8 @@
 
 # Day 1
 ## [940. Distinct Subsequences II](https://leetcode.com/problems/distinct-subsequences-ii/description/) 
-<h4> Given a string s, return the number of distinct non-empty subsequences of s. Since the answer may be very large, return it modulo <code>109 + 7</code> .
-A subsequence of a string is a new string that is formed from the original string by deleting some (can be none) of the characters without disturbing the relative positions of the remaining characters. i.e., <code>"ace</code>" is a subsequence of <code>"abcde</code>" while <code>"aec</code>" is not.
-</h4>
+> Given a string s, return the number of distinct non-empty subsequences of s. Since the answer may be very large, return it modulo <code>109 + 7</code>. A subsequence of a string is a new string that is formed from the original string by deleting some (can be none) of the characters without disturbing the relative positions of the remaining characters. i.e., <code>"ace</code>" is a subsequence of <code>"abcde</code>" while <code>"aec</code>" is not.
+
 <code >Logic</code>
 
 ```text
@@ -64,10 +63,8 @@ public:
 <br>
 
 ## [Dice Throws](https://www.codingninjas.com/codestudio/problems/dice-throws_799924?leftPanelTab=0) 
-<h4>
-You are given D dice, each having F faces numbered 1 to F, both inclusive. The task is to find the possible number of ways to roll the dice together such that the sum of face-up numbers equal the given target S.
-Return ans to modulo <code>1e9 + 7</code> .
-</h4>
+>You are given D dice, each having F faces numbered 1 to F, both inclusive. The task is to find the possible number of ways to roll the dice together such that the sum of face-up numbers equal the given target S. Return ans to modulo <code>1e9 + 7</code> .
+
 <code >Logic</code>
 
 ```text
@@ -166,11 +163,9 @@ int diceThrows(int d, int f, int s) {
 
 # Day 2
 ## [486. Predict the Winner / Optimal Game Streatgy](https://leetcode.com/problems/predict-the-winner/description/) 
-<h4>
-You are given an integer array nums. Two players are playing a game with this array: player 1 and player 2.
-Player 1 and player 2 take turns, with player 1 starting first. Both players start the game with a score of 0. At each turn, the player takes one of the numbers from either end of the array (i.e., nums[0] or nums[nums.length - 1]) which reduces the size of the array by 1. The player adds the chosen number to their score. The game ends when there are no more elements in the array.
-Return true if Player 1 can win the game. If the scores of both players are equal, then player 1 is still the winner, and you should also return true. You may assume that both players are playing optimally.
-</h4>
+>You are given an integer array nums. Two players are playing a game with this array: player 1 and player 2.
+Player 1 and player 2 take turns, with player 1 starting first. Both players start the game with a score of 0. At each turn, the player takes one of the numbers from either end of the array (i.e., nums[0] or nums[nums.length - 1]) which reduces the size of the array by 1. The player adds the chosen number to their score. The game ends when there are no more elements in the array. Return true if Player 1 can win the game. If the scores of both players are equal, then player 1 is still the winner, and you should also return true. You may assume that both players are playing optimally.
+
 <code >Logic</code>
 
 ```text
@@ -230,9 +225,9 @@ public:
 
 
 ## [221. Maximal Square](https://leetcode.com/problems/maximal-square/description/) 
-<h4>
-Given an m x n binary matrix filled with 0's and 1's, find the largest <code>square</code>  containing only 1's and return its area.
-</h4>
+
+> Given an m x n binary matrix filled with 0's and 1's, find the largest <code>square</code>  containing only 1's and return its area.
+
 <code >Logic</code>
 
 ```text
@@ -348,9 +343,9 @@ public:
 
 <!-- # Day 
 ## []() 
-<h4>
-Statement
-</h4>
+
+> Statement
+
 <code >Logic</code>
 
 ```text
