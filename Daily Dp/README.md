@@ -20,7 +20,10 @@
 
 <code >Logic</code>
 
-```text
+
+
+
+ ```qoute
 1. dp[i]  shows that total number of sequece till ith index but if we found repeating character then we have to remove it's all previous subsequence 
 2. let say repeateIdx is  index where last time char i occur so we can remove it's all occurance before this such that dp[i] = dp[i]  - dp[repeateIdx - 1];
       Case 1 : if we found element which we don't found before
@@ -67,7 +70,7 @@ public:
 
 <code >Logic</code>
 
-```text
+```quote
 1. Recursion    : Simple recursion with target sum approach our targeet is total sum and 
                   for each dice we have 1 to F option.
                   TC = O(2^N)  SC = O(N)
@@ -168,7 +171,7 @@ Player 1 and player 2 take turns, with player 1 starting first. Both players sta
 
 <code >Logic</code>
 
-```text
+```quote
 This is MiniMax Logic  we can max of min in our DP state Generally used in Game theory
 (i,j) is the position from player 1 can pick
 Case1:  pick from start (ith)
@@ -230,7 +233,7 @@ public:
 
 <code >Logic</code>
 
-```text
+```quote
 Approach 1 : dp[i][j] --> max length of square at i,j and stores it length
         case 1: i ==0 then we are at first row so max length is one if matrix[0][j] = 1 i.e dp[0][j]= matrix[0][j]
         case 2: j ==0 then we are at first col so max length is one if matrix[i][0] = 1 i.e dp[i][j]= matrix[i][0]
@@ -348,7 +351,7 @@ public:
 
 <code >Logic</code>
 
-```text
+```quote
 Logic
 ```
 [Code Link]()
