@@ -12,8 +12,9 @@
 
 # Day 1
 ## [175. Combine Two Tables](https://leetcode.com/problems/combine-two-tables/) 
-<h4> Write an SQL query to report the first name, last name, city, and state of each person in the <code>Person</code> table. If the address of a personId is not present in the <code>Address</code>  table, report null instead.
-</h4>
+> Write an SQL query to report the first name, last name, city, and state of each person in the <code>Person</code> table. If the address of a personId is not present in the <code>Address</code>  table, report null instead.
+
+
 <details><summary>Schema</summary>
 
 ```text
@@ -53,8 +54,7 @@ select firstName, lastName , city , state from Person as p left join Address as 
 
 
 ## [181. Employees Earning More Than Their Managers](https://leetcode.com/problems/employees-earning-more-than-their-managers/)
-<h4>Write an SQL query to find the employees who earn more than their managers.
-Return the result table in any order.The query result format is in the following example.</h4>
+> Write an SQL query to find the employees who earn more than their managers. Return the result table in any order.The query result format is in the following example.</>
 <details>
 <summary>Schema</summary>
 
@@ -84,10 +84,9 @@ select e.name as Employee from employee as e inner join employee as m on e.manag
 
 # Day 2
 ## [182. Duplicate Emails](https://leetcode.com/problems/duplicate-emails/description/)
-<h4>Write an SQL query to report all the duplicate emails. Note that it's guaranteed that the email field is not NULL.
-Return the result table in any order.
-The query result format is in the following example.
-</h4>
+> Write an SQL query to report all the duplicate emails. Note that it's guaranteed that the email field is not NULL. 
+> Return the result table in any order. 
+> The query result format is in the following example.
 <details>
 <summary>Schema</summary>
 
@@ -114,10 +113,8 @@ having count(email) > 1;
 <br>
 
 ## [183. Customers Who Never Order](https://leetcode.com/problems/customers-who-never-order/description/)
-<h4> Write an SQL query to report all customers who never order anything.
-Return the result table in any order.
-The query result format is in the following example.
-</h4>
+>  Write an SQL query to report all customers who never order anything Return the result table in any order. The query result format is in the following example.
+
 <details>
 <summary>Schema</summary>
 
