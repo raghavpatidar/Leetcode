@@ -16,11 +16,15 @@
 
 # Day 1
 ## [940. Distinct Subsequences II](https://leetcode.com/problems/distinct-subsequences-ii/description/) 
+
 > Given a string s, return the number of distinct non-empty subsequences of s. Since the answer may be very large, return it modulo <code>109 + 7</code>. A subsequence of a string is a new string that is formed from the original string by deleting some (can be none) of the characters without disturbing the relative positions of the remaining characters. i.e., <code>"ace</code>" is a subsequence of <code>"abcde</code>" while <code>"aec</code>" is not.
 
 <code >Logic</code>
 
- ```quote
+
+
+
+```quote
 1. dp[i]  shows that total number of sequece till ith index but if we found repeating character then we have to remove it's all previous subsequence 
 2. let say repeateIdx is  index where last time char i occur so we can remove it's all occurance before this such that dp[i] = dp[i]  - dp[repeateIdx - 1];
       Case 1 : if we found element which we don't found before
@@ -31,7 +35,6 @@
 
 3. finally dp.back() will have our total distinxt subsequence 
 ```
-
 [Code Link](./01-Distinct-subsequence.cpp)
 <details><summary>code</summary>
 
