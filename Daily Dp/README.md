@@ -20,10 +20,7 @@
 
 <code >Logic</code>
 
-
-
-
- ```qoute
+ ```quote
 1. dp[i]  shows that total number of sequece till ith index but if we found repeating character then we have to remove it's all previous subsequence 
 2. let say repeateIdx is  index where last time char i occur so we can remove it's all occurance before this such that dp[i] = dp[i]  - dp[repeateIdx - 1];
       Case 1 : if we found element which we don't found before
@@ -34,6 +31,7 @@
 
 3. finally dp.back() will have our total distinxt subsequence 
 ```
+
 [Code Link](./01-Distinct-subsequence.cpp)
 <details><summary>code</summary>
 
