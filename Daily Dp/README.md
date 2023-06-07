@@ -8,6 +8,8 @@
 - [Day 1](#day-1)
   - [940. Distinct Subsequences II](#940-distinct-subsequences-ii)
   - [Dice Throws](#dice-throws)
+- [Day 2](#day-2)
+  - [486. Predict the Winner / Optimal Game Streatgy](#486-predict-the-winner--optimal-game-streatgy)
 
 
 
@@ -29,6 +31,7 @@ A subsequence of a string is a new string that is formed from the original strin
 
 3. finally dp.back() will have our total distinxt subsequence 
 ```
+[Code Link](./01-Distinct-subsequence.cpp)
 <details><summary>code</summary>
 
 ```cpp
@@ -82,6 +85,7 @@ Return ans to modulo <code>1e9 + 7</code> .
                   TC = O(N*N)  SC = O(2*N)
                       
 ```
+[Code Link](./01-Dice-Throws.cpp)
 <details><summary>code - Memoization</summary> 
 
 ```cpp
@@ -158,6 +162,70 @@ int diceThrows(int d, int f, int s) {
 ```
 </details>
 <br>
+
+# Day 2
+## [486. Predict the Winner / Optimal Game Streatgy](https://leetcode.com/problems/predict-the-winner/description/) 
+<h4>
+You are given an integer array nums. Two players are playing a game with this array: player 1 and player 2.
+Player 1 and player 2 take turns, with player 1 starting first. Both players start the game with a score of 0. At each turn, the player takes one of the numbers from either end of the array (i.e., nums[0] or nums[nums.length - 1]) which reduces the size of the array by 1. The player adds the chosen number to their score. The game ends when there are no more elements in the array.
+Return true if Player 1 can win the game. If the scores of both players are equal, then player 1 is still the winner, and you should also return true. You may assume that both players are playing optimally.
+</h4>
+<code >Logic</code>
+
+```text
+This is MiniMax Logic  we can max of min in our DP state Generally used in Game theory
+(i,j) is the position from player 1 can pick
+Case1:  pick from start (ith)
+            then second player has two options 
+                Condition1: he can pick from start which is i+1 so player 1 have left with (i+2,j) for next move
+                Condition2 he can pick from end which is j-1 so plaayer 1 have open for first is (i+1,j-1) for next move
+            now as both are playing optimally second player will choose max from 1 and 2 so first player have got min of both condition 
+            such that startPick = min(Condition1 , Condition2) + arr[i] (as start value is picked)
+Case2:  pick from end (jth)
+            then second player has two options 
+                Condition1: he can pick from start which is i+1 so player 1 have (i+2,j) for next move
+                Condition2: he can pick from end which is j-1 so plaayer 1 have open for first is (i+1,j-1) for next move
+            now as both are playing optimally second player will choose max from 1 and 2 so first player have got min of both condition 
+            endPick = min(Condition1 , Condition2) + arr[j] (as end value is picked)
+
+now our player 1 can choose max of both case such that CurrSum = Max(Case1 , Case2) == Max(startPick , endPick);
+```
+[Code Link](./02-Optimal-Gram-Streatgy.cpp)
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    int solve(int i , int j , vector<int>& nums , vector<vector<int>>&dp){{
+        if(i > j)return 0;
+        if(i == j )return nums[i];
+
+        if(dp[i][j] != -1)return dp[i][j];
+
+        int startPick = nums[i] + min(solve(i+2 , j , nums, dp) ,solve( i+1,j-1,nums,dp));
+        int endPick = nums[j] + min(solve(i , j-2 , nums ,dp) , solve(i+1 , j-1 , nums , dp));
+
+        int currSum = max(startPick , endPick);
+        return dp[i][j] = currSum;
+
+    }}
+    
+    bool PredictTheWinner(vector<int>& nums) {
+        int n = nums.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        int totalSum = 0;
+        for(auto i :nums)totalSum += i;
+        int suma = solve(0 , n-1 , nums, dp );
+        int sumb = totalSum - suma;
+        cout<<suma<<" " <<sumb<<endl;
+        return suma >= sumb;
+    }
+};
+```
+</details>
+<br> 
+
 
 <!-- # Day 
 ## []() 
