@@ -13,6 +13,9 @@
 - [Day 4](#day-4)
   - [197. Rising Temperature](#197-rising-temperature)
   - [196. Delete Duplicate Emails](#196-delete-duplicate-emails)
+- [Day 5](#day-5)
+  - [577. Employee Bonus](#577-employee-bonus)
+  - [584. Find Customer Referee](#584-find-customer-referee)
 
 
 # Day 1
@@ -361,10 +364,115 @@ Where id NOT IN (
   );
 
 ``` 
+</br>
+</br>
+
+ # Day 5
+## [577. Employee Bonus](https://leetcode.com/problems/employee-bonus/description/)
+> Write an SQL query to report the name and bonus amount of each employee with a bonus less than 1000.
+Return the result table in any order.
+The query result format is in the following example. 
+
+<details>
+<summary>Schema</summary>
+
+```text
+
+Table: Employee
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| empId       | int     |
+| name        | varchar |
+| supervisor  | int     |
+| salary      | int     |
++-------------+---------+
+empId is the primary key column for this table.
+Each row of this table indicates the name and the ID of an employee in addition to their salary and the id of their manager.
+ 
+
+Table: Bonus
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| empId       | int  |
+| bonus       | int  |
++-------------+------+
+empId is the primary key column for this table.
+empId is a foreign key to empId from the Employee table.
+Each row of this table contains the id of an employee and their respective bonus.
 
 
- <!-- # Day 5
-## [Question ]()
+```
+</details>
+<code >Query</code>
+
+```sql
+
+SELECT e.name  , b.bonus 
+FROM Employee e 
+LEFT JOIN Bonus b 
+  ON e.empId = b.empId 
+WHERE 
+  b.bonus  < 1000 or bonus IS null;
+
+
+
+``` 
+
+
+## [584. Find Customer Referee](https://leetcode.com/problems/find-customer-referee/description/)
+
+> Write an SQL query to report the names of the customer that are not referred by the customer with id = 2.
+Return the result table in any order.
+The query result format is in the following example.
+
+<details>
+<summary>Schema</summary>
+
+```text
+
+
+Table: Customer
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| name        | varchar |
+| referee_id  | int     |
++-------------+---------+
+id is the primary key column for this table.
+Each row of this table indicates the id of a customer, their name, and the id of the customer who referred them.
+
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+-- Brute Force
+SELECT c1.name
+FROM Customer AS c1
+LEFT JOIN Customer AS c2 ON c1.referee_id = c2.id
+WHERE c2.id != 2 OR c2.id IS NULL;
+
+-- Optimal
+SELECT name 
+FROM CUstomer 
+WHERE referee_id != 2 or referee_id is null;
+
+``` 
+
+</br>
+</br>
+
+
+ <!-- # Day 6
+## [Question]()
 > Problem 
 <details>
 <summary>Schema</summary>
@@ -377,4 +485,6 @@ schema
 
 ```sql
 query
-```  -->
+```
+</br>
+  -->
