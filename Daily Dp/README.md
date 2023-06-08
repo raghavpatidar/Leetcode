@@ -11,6 +11,8 @@
 - [Day 2](#day-2)
   - [486. Predict the Winner / Optimal Game Streatgy](#486-predict-the-winner--optimal-game-streatgy)
   - [221. Maximal Square](#221-maximal-square)
+- [Day 3](#day-3)
+  - [ColorFul Knapsack](#colorful-knapsack)
 
 
 
@@ -345,6 +347,106 @@ public:
 <br> 
 
 
+# Day 3
+## [ColorFul Knapsack](https://www.codingninjas.com/codestudio/problems/colorful-knapsack_630415) 
+
+> You are given 'N' stones labeled from 1 to 'N'. The 'i-th' stone has the weight W[i]. There are 'M' colors labeled by integers from 1 to 'M'. The 'i-th' stone has the color C[i] which is an integer between 1 to 'M', both inclusive. 
+> You have been required to fill a Knapsack with these stones. The Knapsack can hold a total weight of 'X'.
+> You are required to select exactly 'M' stones; one of each color. The sum of the weights of the stones must not exceed 'X'. Since you paid a premium for a Knapsack with capacity 'X', you are required to fill the Knapsack as much as possible.
+> Write a program to calculate the best way to fill the Knapsack - that is, the unused capacity should be minimized.
+
+<code >Logic</code>
+
+```quote
+
+we can map each color with all weights with same color
+eg : use Map<int, vector> mp
+
+8 3 13
+2 3 4 2 4 5 2 3
+1 1 1 2 2 2 3 3
+
+mapping
+col--> list of weight is same color
+1 -> [2 3 4]
+2 -> [2 4 5]
+3 -> [2 3]
+
+now we can think of Dynamic Programming
+for each color we we have only one choice to pick it and but which one to be picked it may differ
+so calculate max answer will give us minimum unused capacity
+
+```
+[Code Link](./03-colorful-Knapsack.cpp)
+<details><summary>code</summary>
+
+```cpp
+
+#include <bits/stdc++.h>
+
+int cnt = 1e9;
+int solve(int idx , int target , int m ,  map<int, vector<int>>&mp
+,map<pair<int,int> , int>&dp ){
+    //base
+    if(idx == m){
+         
+         cnt = min(cnt , target);
+        return target;
+    }
+    if(target <= 0 ){
+        return 1e9;
+    }
+    //memo
+    if(dp.find({idx , target})!= dp.end())return dp[{idx,target}];
+    int curr = 1e9;
+
+    // using all only once
+    for(auto j : mp[idx+1]){
+      if (target >= j) {
+        int pick = j + solve(idx + 1, target - j , m ,mp , dp );
+        curr = min(curr , pick);
+      }
+    }
+    return dp[{idx , target}] = curr;
+    
+}
+
+int colorfulKnapsack(int w[], int c[], int n, int m, int x)
+{
+    map<int, vector<int>>mp;
+    map<pair<int,int> , int>dp;
+    for(int i =0 ; i < n ; i++){
+        mp[c[i]].push_back(w[i]);
+    }
+    int ans = solve(0 , x , m , mp , dp);
+    return cnt==1e9 ? -1 : cnt;
+}
+
+```
+</details>
+<br> 
+
+<!-- 
+## []() 
+
+> Statement
+
+<code >Logic</code>
+
+```quote
+Logic
+```
+[Code Link]()
+
+<details><summary>code</summary>
+
+```cpp
+Code
+```
+</details>
+<br> 
+ -->
+
 <!-- # Day 
 ## []() 
 
@@ -363,5 +465,5 @@ Code
 ```
 </details>
 <br> 
+ -->
 
--->
