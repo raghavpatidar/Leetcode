@@ -10,6 +10,9 @@
 - [Day 3](#day-3)
   - [184. Department Highest Salary](#184-department-highest-salary)
   - [180. Consecutive Numbers](#180-consecutive-numbers)
+- [Day 4](#day-4)
+  - [197. Rising Temperature](#197-rising-temperature)
+  - [196. Delete Duplicate Emails](#196-delete-duplicate-emails)
 
 
 # Day 1
@@ -272,7 +275,95 @@ select distinct num ConsecutiveNums from cte where (num=next) and (num=next2next
 </br>
 
 
- <!-- # Day 2
+ # Day 4
+## [197. Rising Temperature](https://leetcode.com/problems/rising-temperature/)
+> Problem 
+<details>
+<summary>Schema</summary>
+
+```text
+
+Table: Weather
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| id            | int     |
+| recordDate    | date    |
+| temperature   | int     |
++---------------+---------+
+id is the primary key for this table.
+This table contains information about the temperature on a certain day.
+
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+-- WE have two function DATE_ADD for increasing date and DATE_SUB decresing date 
+SELECT w1.id
+FROM Weather w1
+JOIN Weather w2 ON w1.recordDate = DATE_ADD(w2.recordDate, INTERVAL 1 DAY)
+WHERE w1.temperature > w2.temperature
+
+
+``` 
+
+## [196. Delete Duplicate Emails](https://leetcode.com/problems/delete-duplicate-emails/)
+> Problem 
+<details>
+<summary>Schema</summary>
+
+```text
+
+Table: Person
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| email       | varchar |
++-------------+---------+
+id is the primary key column for this table.
+Each row of this table contains an email. The emails will not contain uppercase letters.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+-- Brute Force approach getting all id whic are not same then removing it
+DELETE p
+FROM Person p
+INNER JOIN (
+  SELECT p1.id
+  FROM Person p1
+  INNER JOIN Person p2 ON p1.email = p2.email AND p1.id > p2.id
+) AS temp_ids ON p.id = temp_ids.id;
+
+
+-- better approach
+DELETE p1
+FROM Person as p1 LEFT JOIN Person as p2 ON p1.email = p2.email
+WHERE p2.id < p1.id
+
+
+
+-- optimal approach 
+DELETE 
+From person 
+Where id NOT IN (
+  SELECT minId  from (
+    SELECT email , min(id) as minId from Person  GROUP BY email having id = minId) as temp
+  );
+
+``` 
+
+
+ <!-- # Day 5
 ## [Question ]()
 > Problem 
 <details>
