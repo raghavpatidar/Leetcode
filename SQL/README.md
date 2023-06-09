@@ -19,7 +19,7 @@
 - [Day 6](#day-6)
   - [586. Customer Placing the Largest Number of Orders](#586-customer-placing-the-largest-number-of-orders)
   - [595. Big Countries](#595-big-countries)
-  - [Question](#question)
+  - [596. Classes More Than 5 Students](#596-classes-more-than-5-students)
 
 
 # Day 1
@@ -549,28 +549,7 @@ FROM orders
 <summary>Schema</summary>
 
 ```text
-schema
-```
-</details>
-<code >Query</code>
 
-```sql
-
-
-SELECT name , population , area 
-FROM WORLD
-    WHERE area >= 3000000 OR population >= 25000000;
-
-```
-</br>
- 
-
-## [Question]()
-> Problem 
-<details>
-<summary>Schema</summary>
-
-```text
 
 Table: World
 
@@ -591,7 +570,49 @@ Each row of this table gives information about the name of a country, the contin
 <code >Query</code>
 
 ```sql
-query
+
+
+SELECT name , population , area 
+FROM WORLD
+    WHERE area >= 3000000 OR population >= 25000000;
+
+```
+</br>
+ 
+
+## [596. Classes More Than 5 Students](https://leetcode.com/problems/classes-more-than-5-students/description/)
+
+> Write an SQL query to report all the classes that have at least five students.
+Return the result table in any order.
+The query result format is in the following example. 
+
+<details>
+<summary>Schema</summary>
+
+```text
+Table: Courses
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| student     | varchar |
+| class       | varchar |
++-------------+---------+
+(student, class) is the primary key column for this table.
+Each row of this table indicates the name of a student and the class in which they are enrolled.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+SELECT class
+FROM COURSES
+    GROUP BY class 
+    HAVING count(*) >= 5; 
+
+    
 ```
 </br>
  
