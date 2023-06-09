@@ -16,6 +16,10 @@
 - [Day 5](#day-5)
   - [577. Employee Bonus](#577-employee-bonus)
   - [584. Find Customer Referee](#584-find-customer-referee)
+- [Day 6](#day-6)
+  - [586. Customer Placing the Largest Number of Orders](#586-customer-placing-the-largest-number-of-orders)
+  - [Question](#question)
+  - [Question](#question-1)
 
 
 # Day 1
@@ -471,7 +475,101 @@ WHERE referee_id != 2 or referee_id is null;
 </br>
 
 
- <!-- # Day 6
+ # Day 6
+## [586. Customer Placing the Largest Number of Orders](https://leetcode.com/problems/customer-placing-the-largest-number-of-orders/description/)
+
+> Write an SQL query to find the customer_number for the customer who has placed the largest number of orders.
+The test cases are generated so that exactly one customer will have placed more orders than any other customer.
+The query result format is in the following example. 
+
+
+<details>
+<summary>Schema</summary>
+
+```text
+
+Table: Orders
+
++-----------------+----------+
+| Column Name     | Type     |
++-----------------+----------+
+| order_number    | int      |
+| customer_number | int      |
++-----------------+----------+
+order_number is the primary key for this table.
+This table contains information about the order ID and the customer ID.
+ 
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+# Write your MySQL query statement below
+
+-- using sub queries
+SELECT temp.customer_number 
+FROM (
+    SELECT customer_number ,count(order_number) as cntorders
+    FROM orders 
+      GROUP BY customer_number
+  ) temp  
+WHERE temp.cntorders = (
+  SELECT MAX(cntorders) 
+  FROM (
+      SELECT count(order_number) as cntorders
+      FROM orders 
+      GROUP BY customer_number
+  ) subquery
+);
+
+-- using limit and order by
+SELECT customer_number 
+FROM orders 
+  GROUP BY customer_number 
+  ORDER BY count(customer_number) DESC LIMIT 1;
+
+
+
+```
+</br>
+ 
+
+## [Question]()
+> Problem 
+<details>
+<summary>Schema</summary>
+
+```text
+schema
+```
+</details>
+<code >Query</code>
+
+```sql
+query
+```
+</br>
+ 
+
+## [Question]()
+> Problem 
+<details>
+<summary>Schema</summary>
+
+```text
+schema
+```
+</details>
+<code >Query</code>
+
+```sql
+query
+```
+</br>
+ 
+ <!-- # Day 7
 ## [Question]()
 > Problem 
 <details>
