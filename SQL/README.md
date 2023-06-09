@@ -18,8 +18,8 @@
   - [584. Find Customer Referee](#584-find-customer-referee)
 - [Day 6](#day-6)
   - [586. Customer Placing the Largest Number of Orders](#586-customer-placing-the-largest-number-of-orders)
+  - [595. Big Countries](#595-big-countries)
   - [Question](#question)
-  - [Question](#question-1)
 
 
 # Day 1
@@ -506,7 +506,7 @@ This table contains information about the order ID and the customer ID.
 
 ```sql
 
-# Write your MySQL query statement below
+-- Write your MySQL query statement below
 
 -- using sub queries
 SELECT temp.customer_number 
@@ -536,8 +536,15 @@ FROM orders
 </br>
  
 
-## [Question]()
-> Problem 
+## [595. Big Countries](https://leetcode.com/problems/big-countries/description/)
+
+>A country is big if:
+>it has an area of at least three million (i.e., 3000000 km2), or
+>it has a population of at least twenty-five million (i.e., 25000000).
+> - Write an SQL query to report the name, population, and area of the big countries.
+> - Return the result table in any order.
+>The query result format is in the following example.
+
 <details>
 <summary>Schema</summary>
 
@@ -548,7 +555,12 @@ schema
 <code >Query</code>
 
 ```sql
-query
+
+
+SELECT name , population , area 
+FROM WORLD
+    WHERE area >= 3000000 OR population >= 25000000;
+
 ```
 </br>
  
@@ -559,7 +571,21 @@ query
 <summary>Schema</summary>
 
 ```text
-schema
+
+Table: World
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| name        | varchar |
+| continent   | varchar |
+| area        | int     |
+| population  | int     |
+| gdp         | bigint  |
++-------------+---------+
+name is the primary key column for this table.
+Each row of this table gives information about the name of a country, the continent to which it belongs, its area, the population, and its GDP value.
+
 ```
 </details>
 <code >Query</code>
