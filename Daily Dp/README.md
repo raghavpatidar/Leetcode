@@ -13,6 +13,10 @@
   - [221. Maximal Square](#221-maximal-square)
 - [Day 3](#day-3)
   - [ColorFul Knapsack](#colorful-knapsack)
+- [Day 4](#day-4)
+  - [KMP Algo](#kmp-algo)
+  - [1314. Matrix Block Sum](#1314-matrix-block-sum)
+  - [1262. Greatest Sum Divisible by Three](#1262-greatest-sum-divisible-by-three)
 
 
 
@@ -426,26 +430,211 @@ int colorfulKnapsack(int w[], int c[], int n, int m, int x)
 </details>
 <br> 
 
-<!-- 
-## []() 
+# Day 4
 
-> Statement
+## [KMP Algo](https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string/) 
+
+> Given two strings needle and haystack, return the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.
 
 <code >Logic</code>
 
 ```quote
-Logic
-```
-[Code Link]()
+
+1. Build LPS array
+2. LPS array is longest prefic suffix array
+3. Building LSP array --
+   use two pointer prevLps = 0 , i = 1;
+   if needle value is same then increase lsp[i] to prevLsp +1 and prevLps++ , i++
+   now if not equale move to prevLsp until same char found of j = 0
+   if j become move ith pointer with current lps = 0;
+
+4. using lsp array to find pattern matching 
+5. use two pointer i for haystack and j for needle 
+   if char is i,j equal move forward 
+   otherwise move backward unitl we find lsp such that current i equal to lsp[j-1] or j become 0
+
+ ```
+[Code Link](./04-KMP-algo.cpp)
 
 <details><summary>code</summary>
 
 ```cpp
-Code
+
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        //creating lps array
+        int n = haystack.size();
+        int m = needle.size();
+        vector<int>lps(m);
+        //calculating lps
+        int prevLps = 0 , i = 1;
+        while(i < m ){
+            //is equal add 1 and move forward
+            if(needle[i] == needle[prevLps]){
+                lps[i] = prevLps+1;
+                i++;
+                prevLps++;
+            }else{
+                if(prevLps == 0){
+                    // if first index move forrad base case
+                    lps[i] = 0;
+                    i++;
+                }else{
+                    //move backwords till not getting matching char
+                    prevLps = lps[prevLps-1];
+                }
+            }
+        }
+
+        //KMP algo
+         i = 0 ;
+         int j = 0;
+        while(i < n){
+            //match
+            if(needle[j] == haystack[i]){
+                i++ , j++;
+            }else{
+                //not match
+                if(j == 0 ){
+                    //base case if we are at first position and not
+                    //not match move forward
+                    i++;
+                }else{
+                    //move to last lps
+                    j= lps[j-1];
+                }
+            }
+
+            //if we god our string match return
+            if(j == m){
+                // return starting indx of i pointer which is i - m
+                return i - m;
+            }
+        }
+        
+
+        return -1;
+
+    }
+};
+
 ```
 </details>
 <br> 
- -->
+
+
+
+## [1314. Matrix Block Sum](https://leetcode.com/problems/matrix-block-sum/) 
+
+> Given a m x n matrix mat and an integer k, return a matrix answer where each answer[i][j] is the sum of all elements mat[r][c] for:
+> - i - k <= r <= i + k,
+> - j - k <= c <= j + k, and
+> - (r, c) is a valid position in the matrix.
+
+<code >Logic</code>
+
+```quote
+
+1. Fisrt calculate dp sum
+2. for each i,j find it's lower bound and upper bound such that kth conner values 
+3. of total sum of rectangle we can use dp[i][j] - dp[i-1][j] - dp[i][j-1] + dp[i-1][j-1]
+4 add because it get subtracted 2 times in a row
+
+```
+[Code Link](./04-matrix-block-sum.cpp)
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    vector<vector<int>> matrixBlockSum(vector<vector<int>>& mat, int k) {
+        int n = mat.size() , m = mat[0].size();
+        vector<vector<int>>dp( n+1 , vector<int>(m+1 , 0));
+        for(int  i = 1; i <= n  ;i++){
+            for(int j = 1; j <= m ; j++){
+                 dp[i][j] = dp[i-1][j] + dp[i][j-1] - dp[i-1][j-1] + mat[i-1][j-1];
+            }
+        }
+        for(int i = 0; i < n ; i++){
+            for(int j = 0; j < m ; j++)
+            {
+                int x1 = max(0, i-k);
+                int y1 = max(0, j-k);
+                int x2 = min(n-1, i+k);
+                int y2 = min(m-1, j+k);
+                x1++ , y1++, x2++, y2++;
+                 mat[i][j] = dp[x2][y2] - dp[x1-1][y2] - dp[x2][y1-1] + dp[x1-1][y1-1];
+            }
+        }
+        return mat;
+    }
+};
+
+
+```
+</details>
+<br> 
+
+
+
+## [1262. Greatest Sum Divisible by Three](https://leetcode.com/problems/greatest-sum-divisible-by-three/) 
+
+> Given an integer array nums, return the maximum possible sum of elements of the array such that it is divisible by three.
+
+<code >Logic</code>
+
+```quote
+
+1. Think of Dp state with two value current index and mod dp[idx][mod]
+2. do simple recurrsion
+3. convert into modulo tabulation 
+
+```
+[Code Link]()
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    int solve(int idx , int mod , vector<int>&nums , vector<vector<int>>dp){
+        if(idx == 0){
+            if(mod == 0)return 0;
+            else return -1e9;
+        }
+
+        if(dp[idx][mod] != -1)return dp[idx][mod];
+
+
+        int pick = nums[idx-1] + solve(idx- 1 , (nums[idx-1]+mod)%3 , nums , dp);
+        int notPick = solve(idx -1 , mod , nums , dp);
+        return dp[idx][mod] =  max(pick , notPick);
+    }
+     
+    int maxSumDivThree(vector<int>& nums) {
+        vector<vector<int>>dp(nums.size()+1 , vector<int>(3 , -1e9));
+        dp[0][0] = 0;
+        dp[0][1] = -1e9;
+        dp[0][2] = -1e9;
+        for(int i = 1; i <= nums.size() ; i++){
+            for(int j = 2 ;j >= 0 ; j--){
+                int pick = nums[i-1] + dp[i- 1 ][ (nums[i-1]+j)%3 ];
+                int notPick = dp[i -1][j];
+                 dp[i][j] =  max(pick , notPick);
+            }
+        }
+        return dp[nums.size()][0];
+        // return solve(nums.size() , 0 , nums , dp);
+    }
+};
+
+
+```
+</details>
+<br> 
+
 
 <!-- # Day 
 ## []() 
@@ -464,6 +653,6 @@ Logic
 Code
 ```
 </details>
-<br> 
- -->
+<br>  -->
+
 
