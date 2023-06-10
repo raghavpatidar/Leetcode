@@ -17,7 +17,7 @@
   - [KMP Algo](#kmp-algo)
   - [1314. Matrix Block Sum](#1314-matrix-block-sum)
   - [1262. Greatest Sum Divisible by Three](#1262-greatest-sum-divisible-by-three)
-- [Day  6](#day--6)
+- [Day 6](#day-6)
   - [494. Target Sum](#494-target-sum)
   - [646. Maximum Length of Pair Chain](#646-maximum-length-of-pair-chain)
 
@@ -639,7 +639,7 @@ public:
 <br> 
 
 
-# Day  6
+# Day 6
 ## [494. Target Sum](https://leetcode.com/problems/target-sum/description/) 
 
 > You are given an integer array nums and an integer target.
