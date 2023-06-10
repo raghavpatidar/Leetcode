@@ -703,20 +703,63 @@ public:
 </details>
 <br> 
 
-## []() 
+## [](https://leetcode.com/problems/maximum-length-of-pair-chain/) 
 
-> Statement
+> You are given an array of n pairs pairs where pairs[i] = [lefti, righti] and lefti < righti.
+A pair p2 = [c, d] follows a pair p1 = [a, b] if b < c. A chain of pairs can be formed in this fashion.
+Return the length longest chain which can be formed.
+You do not need to use up all the given intervals. You can select pairs in any order.
+
+ 
 
 <code >Logic</code>
 
 ```quote
-Logic
+
+1. Knapscak logic
+2. pick if condition satisfy otherwise not pick
+3. retrun max 
+
 ```
-[Code Link]()
+[Code Link](./05-maxinum-len-pair-chain.cpp)
 <details><summary>code</summary>
 
 ```cpp
-Code
+
+
+class Solution {
+public:
+    int solve(int idx, int previdx, vector<vector<int>>& pairs, vector<vector<int>>& dp) {
+        if (idx == pairs.size()) {
+            return 0;
+        }
+        if (dp[idx][previdx + 1] != -1)return dp[idx][previdx + 1];
+
+        int notPick = solve(idx + 1, previdx, pairs, dp);
+        int pick = 0;
+        if (previdx == -1 || pairs[idx][0] > pairs[previdx][1]) {
+            pick = 1 + solve(idx + 1, idx, pairs, dp);
+        }
+        return dp[idx][previdx + 1] = max(pick, notPick);
+    }
+
+    static bool comp(vector<int>& a, vector<int>& b) {
+        if (a[0] < b[0])return true;
+        if (a[0] > b[0])return false;
+        return a[1] < b[1];
+    }
+
+    int findLongestChain(vector<vector<int>>& pairs) {
+        int n = pairs.size();
+        vector<vector<int>> dp(n, vector<int>(n + 1, -1));
+        sort(pairs.begin(), pairs.end(), comp);
+        int ans = solve(0, -1, pairs, dp);
+        return ans;
+
+    }
+};
+
+
 ```
 </details>
 <br> 
