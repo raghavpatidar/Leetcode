@@ -17,9 +17,9 @@
   - [KMP Algo](#kmp-algo)
   - [1314. Matrix Block Sum](#1314-matrix-block-sum)
   - [1262. Greatest Sum Divisible by Three](#1262-greatest-sum-divisible-by-three)
-- [Day](#day)
+- [Day  6](#day--6)
   - [494. Target Sum](#494-target-sum)
-  - [](#)
+  - [646. Maximum Length of Pair Chain](#646-maximum-length-of-pair-chain)
 
 
 
@@ -639,7 +639,7 @@ public:
 <br> 
 
 
-# Day 
+# Day  6
 ## [494. Target Sum](https://leetcode.com/problems/target-sum/description/) 
 
 > You are given an integer array nums and an integer target.
@@ -703,7 +703,7 @@ public:
 </details>
 <br> 
 
-## [](https://leetcode.com/problems/maximum-length-of-pair-chain/) 
+## [646. Maximum Length of Pair Chain](https://leetcode.com/problems/maximum-length-of-pair-chain/) 
 
 > You are given an array of n pairs pairs where pairs[i] = [lefti, righti] and lefti < righti.
 A pair p2 = [c, d] follows a pair p1 = [a, b] if b < c. A chain of pairs can be formed in this fashion.
