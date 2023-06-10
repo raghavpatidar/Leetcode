@@ -17,6 +17,9 @@
   - [KMP Algo](#kmp-algo)
   - [1314. Matrix Block Sum](#1314-matrix-block-sum)
   - [1262. Greatest Sum Divisible by Three](#1262-greatest-sum-divisible-by-three)
+- [Day](#day)
+  - [494. Target Sum](#494-target-sum)
+  - [](#)
 
 
 
@@ -631,6 +634,89 @@ public:
 };
 
 
+```
+</details>
+<br> 
+
+
+# Day 
+## [494. Target Sum](https://leetcode.com/problems/target-sum/description/) 
+
+> You are given an integer array nums and an integer target.
+You want to build an expression out of nums by adding one of the symbols '+' and '-' before each integer in nums and then concatenate all the integers.
+> - For example, if nums = [2, 1], you can add a '+' before 2 and a '-' before 1 and concatenate them to build the expression "+2-1".
+Return the number of different expressions that you can build, which evaluates to target.
+
+<code >Logic</code>
+
+```quote
+
+1. seperate positive and negative
+2. so s1 +ve and s2 -ve sum
+3. s1 - (abs(s2)) = target
+4. s1 + s2 = TotSum
+5. by adding above euqations we get 
+6. s1 = (target + TotSum)/2;
+7. so if s1 is not integer then answer is  0
+8. otherwise we just need to count so new target which is s1 in our array
+
+```
+[Code Link](./05-target-sum.cpp)
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    int solve(int i, int target, vector<int>&nums,vector<vector<int>>&dp){
+        //base case
+        if(i<0)
+            return target==0;
+        
+        //check the cache
+        if(dp[i][target]!=-1)
+            return dp[i][target];
+            
+        int pick=0,notpick=0;
+        notpick = solve(i-1,target,nums,dp);
+        if(target>=nums[i])
+            pick = solve(i-1,target-nums[i],nums,dp);
+        
+        return  dp[i][target] = pick + notpick;
+    }
+    
+    int findTargetSumWays(vector<int>& nums, int target) {
+        int n=nums.size();
+        int total_sum=0;
+        for(int i=0;i<n;i++)
+            total_sum+=nums[i];
+        int T= target + total_sum;
+        if(T%2 || T<0)
+            return 0;
+        vector<vector<int>>dp(n,vector<int>(T/2+1,-1));
+        return solve(n-1,T/2,nums,dp);
+    }
+};
+
+
+```
+</details>
+<br> 
+
+## []() 
+
+> Statement
+
+<code >Logic</code>
+
+```quote
+Logic
+```
+[Code Link]()
+<details><summary>code</summary>
+
+```cpp
+Code
 ```
 </details>
 <br> 
