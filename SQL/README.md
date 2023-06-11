@@ -23,6 +23,10 @@
 - [Day 7](#day-7)
   - [607. Sales Person](#607-sales-person)
   - [610. Triangle Judgement](#610-triangle-judgement)
+- [Day 8](#day-8)
+  - [627. Swap Salary](#627-swap-salary)
+  - [620. Not Boring Movies](#620-not-boring-movies)
+  - [619. Biggest Single Number](#619-biggest-single-number)
 
 
 # Day 1
@@ -748,9 +752,148 @@ From Triangle
 
 
 
- <!-- # Day 7
+ # Day 8
+
+ 
+## [627. Swap Salary](https://leetcode.com/problems/swap-salary/)
+> Write an SQL query to swap all 'f' and 'm' values (i.e., change all 'f' values to 'm' and vice versa) with a single update statement and no intermediate temporary tables.
+Note that you must write a single update statement, do not write any select statement for this problem.
+The query result format is in the following example. 
+
+
+<details>
+<summary>Schema</summary>
+
+```text
+
+Table: Salary
+
++-------------+----------+
+| Column Name | Type     |
++-------------+----------+
+| id          | int      |
+| name        | varchar  |
+| sex         | ENUM     |
+| salary      | int      |
++-------------+----------+
+id is the primary key for this table.
+The sex column is ENUM value of type ('m', 'f').
+The table contains information about an employee.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+
+-- using If statement
+UPDATE Salary 
+Set sex = IF(sex = 'f' , 'm' , 'f');
+
+
+-- using CASE
+UPDATE Salary 
+SET sex = CASE WHEN sex = 'f' then 'm' else 'f' END; 
+
+
+```
+</br>
+ 
+
+
+
+## [620. Not Boring Movies](https://leetcode.com/problems/not-boring-movies/)
+
+> Write an SQL query to report the movies with an odd-numbered ID and a description that is not "boring".
+Return the result table ordered by rating in descending order.
+The query result format is in the following example.
+
+  
+
+ 
+<details>
+<summary>Schema</summary>
+
+```text
+
+Table: Cinema
+
++----------------+----------+
+| Column Name    | Type     |
++----------------+----------+
+| id             | int      |
+| movie          | varchar  |
+| description    | varchar  |
+| rating         | float    |
++----------------+----------+
+id is the primary key for this table.
+Each row contains information about the name of a movie, its genre, and its rating.
+rating is a 2 decimal places float in the range [0, 10]
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+
+SELECT * 
+FROM Cinema 
+Where id%2 = 1 AND description != "boring" 
+ORDER BY rating DESC;
+
+```
+</br>
+ 
+
+
+
+## [619. Biggest Single Number](https://leetcode.com/problems/biggest-single-number/)
+
+> A single number is a number that appeared only once in the MyNumbers table.
+Write an SQL query to report the largest single number. If there is no single number, report null.
+The query result format is in the following example.
+
+ 
+<details>
+<summary>Schema</summary>
+
+```text
+
+Table: MyNumbers
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| num         | int  |
++-------------+------+
+There is no primary key for this table. It may contain duplicates.
+Each row of this table contains an integer.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+SELECT max(temp.num) as num
+FROM(
+  SELECT num FROM MyNumbers 
+  GROUP BY num having count(num) = 1) temp;
+  
+```
+</br>
+ 
+<!-- 
+
+# Day 9
+
 ## [Question]()
+
 > Problem 
+
+ 
 <details>
 <summary>Schema</summary>
 
@@ -764,4 +907,6 @@ schema
 query
 ```
 </br>
-  -->
+ 
+
+ -->
