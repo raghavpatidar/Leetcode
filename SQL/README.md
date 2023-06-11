@@ -22,7 +22,7 @@
   - [596. Classes More Than 5 Students](#596-classes-more-than-5-students)
 - [Day 7](#day-7)
   - [607. Sales Person](#607-sales-person)
-  - [Question](#question)
+  - [610. Triangle Judgement](#610-triangle-judgement)
 
 
 # Day 1
@@ -702,19 +702,47 @@ INNER JOIN
 
 
 
-## [Question]()
-> Problem 
+## [610. Triangle Judgement](https://leetcode.com/problems/triangle-judgement/)
+
+> Write an SQL query to report for every three line segments whether they can form a triangle.
+Return the result table in any order.
+The query result format is in the following example. 
+
+ 
 <details>
 <summary>Schema</summary>
 
 ```text
-schema
+
+Table: Triangle
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| x           | int  |
+| y           | int  |
+| z           | int  |
++-------------+------+
+(x, y, z) is the primary key column for this table.
+Each row of this table contains the lengths of three line segments.
+
 ```
 </details>
 <code >Query</code>
 
 ```sql
-query
+
+-- using If statement
+SELECT *  , if( x < y + z and  y < x + z and z < x + y , "Yes" , "No") as triangle from Triangle;
+
+-- using Case Statement
+SELECT  x , y , z ,
+CASE 
+  WHEN  x < y + z and  y < x + z and z < x + y
+  THEN  "Yes"
+  ELSE "No" END as triangle
+From Triangle
+
 ```
 </br>
 
