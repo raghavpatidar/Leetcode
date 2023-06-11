@@ -20,6 +20,8 @@
 - [Day 6](#day-6)
   - [494. Target Sum](#494-target-sum)
   - [646. Maximum Length of Pair Chain](#646-maximum-length-of-pair-chain)
+- [Day 7](#day-7)
+  - [688. Knight Probability in Chessboard](#688-knight-probability-in-chessboard)
 
 
 
@@ -763,6 +765,58 @@ public:
 ```
 </details>
 <br> 
+
+
+# Day 7
+## [688. Knight Probability in Chessboard](https://leetcode.com/problems/knight-probability-in-chessboard/) 
+
+> On an n x n chessboard, a knight starts at the cell (row, column) and attempts to make exactly k moves. The rows and columns are 0-indexed, so the top-left cell is (0, 0), and the bottom-right cell is (n - 1, n - 1).
+A chess knight has eight possible moves it can make, as illustrated below. Each move is two cells in a cardinal direction, then one cell in an orthogonal direction.
+
+<code >Logic</code>
+
+```quote
+
+1. dp[row][col][k] --> row , column , k moves
+2. if we are at index where row or col outofnound return 0
+3. if we got k ==0 return 1
+4. calculate for all 6 directions and take probability such that 1/8
+
+```
+[Code Link](./06-knight-probability.cpp)
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    // int dx[8] = {-2 , -2 ,-1 , -1 , 1 , 1 , 2 , 2};
+    // int dy[8] = {1 , -1  ,2  , -2 , 2 , -2 , 1 , -1};
+    vector<int>dx={-2,-2,-1,-1,1,1,2,2},dy={-1,1,-2,2,-2,2,1,-1};
+
+    double solve(int  r , int c , int k , int n , vector<vector<vector<double>>>&dp ){
+        if(r < 0 || c < 0 || r >= n || c >= n )return 0.0;
+        if(k == 0)return 1.0;
+        if(dp[r][c][k] != -1)return dp[r][c][k];
+        double cnt = 0;
+        for(int i = 0 ; i < 8; i++){
+            cnt += ( solve(r +  dx[i] , c +  dy[i] , k - 1 , n, dp));
+        }
+        cnt = cnt/8;
+        return dp[r][c][k] = cnt;
+        return cnt;
+    }
+    double knightProbability(int n, int k, int row, int column) {
+         vector<vector<vector<double>>> dp( n +1, vector<vector<double>>( n+1 , vector<double>(k+1 , -1)));
+         return solve(row , column , k , n , dp);
+    }
+};
+
+
+```
+</details>
+<br> 
+
 
 
 <!-- # Day 
