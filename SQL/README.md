@@ -20,6 +20,9 @@
   - [586. Customer Placing the Largest Number of Orders](#586-customer-placing-the-largest-number-of-orders)
   - [595. Big Countries](#595-big-countries)
   - [596. Classes More Than 5 Students](#596-classes-more-than-5-students)
+- [Day 7](#day-7)
+  - [607. Sales Person](#607-sales-person)
+  - [Question](#question)
 
 
 # Day 1
@@ -616,6 +619,107 @@ FROM COURSES
 ```
 </br>
  
+# Day 7
+## [607. Sales Person](https://leetcode.com/problems/sales-person/description/)
+
+> Write an SQL query to report the names of all the salespersons who did not have any orders related to the company with the name "RED".
+Return the result table in any order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```text
+
+able: SalesPerson
+
++-----------------+---------+
+| Column Name     | Type    |
++-----------------+---------+
+| sales_id        | int     |
+| name            | varchar |
+| salary          | int     |
+| commission_rate | int     |
+| hire_date       | date    |
++-----------------+---------+
+sales_id is the primary key column for this table.
+Each row of this table indicates the name and the ID of a salesperson alongside their salary, commission rate, and hire date.
+ 
+
+Table: Company
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| com_id      | int     |
+| name        | varchar |
+| city        | varchar |
++-------------+---------+
+com_id is the primary key column for this table.
+Each row of this table indicates the name and the ID of a company and the city in which the company is located.
+ 
+
+Table: Orders
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| order_id    | int  |
+| order_date  | date |
+| com_id      | int  |
+| sales_id    | int  |
+| amount      | int  |
++-------------+------+
+order_id is the primary key column for this table.
+com_id is a foreign key to com_id from the Company table.
+sales_id is a foreign key to sales_id from the SalesPerson table.
+Each row of this table contains information about one order. This includes the ID of the company, the ID of the salesperson, the date of the order, and the amount paid.
+ 
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+SELECT s.name
+FROM SalesPerson as s
+WHERE 
+s.sales_id not IN
+(SELECT 
+  o.sales_id as saleid
+FROM 
+  (SELECT com_id FROM Company WHERE name = "RED") temp
+INNER JOIN 
+  orders as o ON o.com_id = temp.com_id) 
+
+
+
+```
+</br>
+
+
+
+
+## [Question]()
+> Problem 
+<details>
+<summary>Schema</summary>
+
+```text
+schema
+```
+</details>
+<code >Query</code>
+
+```sql
+query
+```
+</br>
+
+
+
  <!-- # Day 7
 ## [Question]()
 > Problem 
