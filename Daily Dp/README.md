@@ -17,11 +17,13 @@
   - [KMP Algo](#kmp-algo)
   - [1314. Matrix Block Sum](#1314-matrix-block-sum)
   - [1262. Greatest Sum Divisible by Three](#1262-greatest-sum-divisible-by-three)
-- [Day 6](#day-6)
+- [Day 5](#day-5)
   - [494. Target Sum](#494-target-sum)
   - [646. Maximum Length of Pair Chain](#646-maximum-length-of-pair-chain)
-- [Day 7](#day-7)
+- [Day 6](#day-6)
   - [688. Knight Probability in Chessboard](#688-knight-probability-in-chessboard)
+- [Day 7](#day-7)
+  - [115. Distinct Subsequences](#115-distinct-subsequences)
 
 
 
@@ -641,7 +643,7 @@ public:
 <br> 
 
 
-# Day 6
+# Day 5
 ## [494. Target Sum](https://leetcode.com/problems/target-sum/description/) 
 
 > You are given an integer array nums and an integer target.
@@ -767,7 +769,7 @@ public:
 <br> 
 
 
-# Day 7
+# Day 6
 ## [688. Knight Probability in Chessboard](https://leetcode.com/problems/knight-probability-in-chessboard/) 
 
 > On an n x n chessboard, a knight starts at the cell (row, column) and attempts to make exactly k moves. The rows and columns are 0-indexed, so the top-left cell is (0, 0), and the bottom-right cell is (n - 1, n - 1).
@@ -819,7 +821,67 @@ public:
 
 
 
-<!-- # Day 
+# Day 7
+## [115. Distinct Subsequences](https://leetcode.com/problems/distinct-subsequences/s) 
+
+> Given two strings s and t, return the number of distinct 
+subsequences
+ of s which equals t.
+The test cases are generated so that the answer fits on a 32-bit signed integer.
+
+ 
+
+<code >Logic</code>
+
+```quote
+
+1. String matching DP pattern
+2. Think like moving from back and we have two option
+3. IF it is same then we can move forward in both strings i-1 , j-1
+4. else we can not take form our first string s such that i-1 , j 
+5. Base Case --> if we reach to end of second string mean we find pattern return true
+5. if we reach to end of first string and not second then we finish all our string and not find patter yet so return false
+6. return sum of all answer as we need count 
+
+```
+[Code Link](./07-Distinct-sequences.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public: 
+    int solve(int i  , int  j , string &s , string&t , vector<vector<int>>&dp){
+        if(j == 0 )return 1 ;
+        if(i == 0 )return 0;
+
+        if(dp[i][j] != -1)return dp[i][j];
+
+        //same
+        int same = 0;
+        if(s[i-1] == t[j-1]){
+            same = solve(i-1 , j-1 , s , t , dp);
+        }
+        int notSame  = solve(i-1 , j , s , t , dp );
+
+        return dp[i][j] =  same + notSame;
+    }
+    int numDistinct(string s, string t) {
+        int n  = s.size(), m = t.size();
+        vector<vector<int>>dp(n+1 , vector<int> (m+1 ,-1));
+        return solve(n , m , s , t , dp);
+    }
+};
+
+```
+</details>
+<br> 
+
+
+<!-- 
+
+# Day 7
 ## []() 
 
 > Statement
@@ -830,12 +892,14 @@ public:
 Logic
 ```
 [Code Link]()
+
 <details><summary>code</summary>
 
 ```cpp
 Code
 ```
 </details>
-<br>  -->
 
+<br> 
 
+ -->
