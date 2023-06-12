@@ -24,6 +24,7 @@
   - [688. Knight Probability in Chessboard](#688-knight-probability-in-chessboard)
 - [Day 7](#day-7)
   - [115. Distinct Subsequences](#115-distinct-subsequences)
+  - [132. Palindrome Partitioning II](#132-palindrome-partitioning-ii)
 
 
 
@@ -876,6 +877,72 @@ public:
 
 ```
 </details>
+<br> 
+
+
+
+
+
+## [132. Palindrome Partitioning II](https://leetcode.com/problems/palindrome-partitioning-ii/) 
+
+> Given a string s, partition s such that every 
+substring of the partition is a palindrome.
+Return the minimum cuts needed for a palindrome partitioning of s.
+
+<code >Logic</code>
+
+```quote
+
+1. Think Of MCM pattern
+2. [aaabbc] from start we will start puttion our partition till end 
+   such that start from i 
+3. Base -> if i>=0 we  can return 0 we don't need more cuts
+4. if(our current i --> to --> n) have palindrom so we don't need more cuts
+5. k range [i +1 , n-1]
+6. if [i,k] is plaindrom then we can add call recursion on this
+
+```
+[Code Link](./07-Palindrome-partitioning-II.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    bool checkPalindrome(int i , int j , string &s){
+        while(i  <= j ){
+            if(s[i] != s[j])return false;
+            i++ , j--;
+        }
+        return true;
+    }
+    int solve(int i  , string &s  , vector<int>&dp){
+        
+        if(i>= s.size() or checkPalindrome(i, s.size() -1 , s)) return 0;
+        int mini = 1e9;
+        if(dp[i] != -1)return dp[i];
+        
+        for(int k = i ; k < s.size() ; k++){
+            if(checkPalindrome(i,k,s)){
+                int temp = 1 + solve(k+1 , s , dp);
+                mini = min(temp , mini);
+            }
+        }
+        return dp[i] =  mini;
+
+    }
+    int minCut(string s) {
+        if(s.size() == 0 )return 0;
+        vector<int>dp(s.size()+1 , -1);
+        return solve(0  , s , dp);
+    }
+  
+};
+
+```
+</details>
+
 <br> 
 
 
