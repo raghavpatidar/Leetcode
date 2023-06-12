@@ -27,6 +27,9 @@
   - [627. Swap Salary](#627-swap-salary)
   - [620. Not Boring Movies](#620-not-boring-movies)
   - [619. Biggest Single Number](#619-biggest-single-number)
+- [Day 9](#day-9)
+  - [1050. Actors and Directors Who Cooperated At Least Three Times](#1050-actors-and-directors-who-cooperated-at-least-three-times)
+  - [1068. Product Sales Analysis I](#1068-product-sales-analysis-i)
 
 
 # Day 1
@@ -622,6 +625,7 @@ FROM COURSES
     
 ```
 </br>
+</br>
  
 # Day 7
 ## [607. Sales Person](https://leetcode.com/problems/sales-person/description/)
@@ -748,6 +752,7 @@ CASE
 From Triangle
 
 ```
+</br>
 </br>
 
 
@@ -884,10 +889,110 @@ FROM(
   
 ```
 </br>
+</br>
  
-<!-- 
+
 
 # Day 9
+
+## [1050. Actors and Directors Who Cooperated At Least Three Times](https://leetcode.com/problems/actors-and-directors-who-cooperated-at-least-three-times/description/)
+
+> Write a SQL query for a report that provides the pairs (actor_id, director_id) where the actor has cooperated with the director at least three times.
+Return the result table in any order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```text
+
+Table: ActorDirector
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| actor_id    | int     |
+| director_id | int     |
+| timestamp   | int     |
++-------------+---------+
+timestamp is the primary key column for this table.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+SELECT actor_id , director_id  
+FROM ActorDirector 
+GROUP BY actor_id , director_id 
+HAVING count(director_id) > 2;
+
+```
+</br>
+
+## [1068. Product Sales Analysis I](https://leetcode.com/problems/product-sales-analysis-i/description/)
+
+> Write an SQL query that reports the product_name, year, and price for each sale_id in the Sales table.
+Return the resulting table in any order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```text
+
+Table: Sales
+
++-------------+-------+
+| Column Name | Type  |
++-------------+-------+
+| sale_id     | int   |
+| product_id  | int   |
+| year        | int   |
+| quantity    | int   |
+| price       | int   |
++-------------+-------+
+(sale_id, year) is the primary key of this table.
+product_id is a foreign key to Product table.
+Each row of this table shows a sale on the product product_id in a certain year.
+Note that the price is per unit.
+ 
+
+Table: Product
+
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| product_id   | int     |
+| product_name | varchar |
++--------------+---------+
+product_id is the primary key of this table.
+Each row of this table indicates the product name of each product.
+
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+SELECT p.product_name , s.year , s.price
+FROM Product  p
+INNER JOIN Sales s 
+ON p.product_id = s.product_id
+
+```
+</br>
+</br>
+ 
+
+
+<!-- 
+
+# Day 10
 
 ## [Question]()
 
