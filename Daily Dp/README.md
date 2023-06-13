@@ -25,6 +25,9 @@
 - [Day 7](#day-7)
   - [115. Distinct Subsequences](#115-distinct-subsequences)
   - [132. Palindrome Partitioning II](#132-palindrome-partitioning-ii)
+- [Day 8](#day-8)
+  - [712. Minimum ASCII Delete Sum for Two Strings](#712-minimum-ascii-delete-sum-for-two-strings)
+  - [174. Dungeon Game](#174-dungeon-game)
 
 
 
@@ -946,9 +949,181 @@ public:
 <br> 
 
 
+
+
+# Day 8
+## [712. Minimum ASCII Delete Sum for Two Strings](https://leetcode.com/problems/minimum-ascii-delete-sum-for-two-strings/) 
+
+> Given two strings s1 and s2, return the lowest ASCII sum of deleted characters to make two strings equal
+
+<code >Logic</code>
+
+```quote
+
+1. Base Case - if first string become empty and we left with second so we need to
+   deleted all from second such that i==0 return sumPref(till j) same of second string also
+2. now if we got both same value we don't need to delete this just move forward [i-1,j-1]
+3. if we are at different we can delete any one of them so try both cases [i-1,j] and [i,j-1]
+```
+[Code Link](./08-Minimum-ASCII-sum-delete.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    int solve(int  i , int j , string &s , string&t  ,vector<vector<int>>&dp ){
+        if(i == 0 and j== 0)return 0;
+        if(i == 0 )return t[j-1] + solve(i , j- 1 , s , t , dp);
+        if(j == 0 )return s[i-1] + solve(i-1 , j , s , t , dp);
+       
+        
+        if(dp[i][j] != -1 )return dp[i][j];
+
+        int same = 1e9;
+        if(s[i-1] == t[j-1]){
+            return solve(i-1 , j- 1 ,s , t , dp);
+        }
+        int notSameMoveFirst = s[i-1] + solve(i-1 , j , s , t , dp);
+        int notSameMoveSecond = t[j-1] + solve(i , j-1 , s , t, dp);
+
+        return dp[i][j] =  min( notSameMoveFirst , notSameMoveSecond); 
+    }
+    int minimumDeleteSum(string s1, string s2) {
+       int n = s1.size() , m = s2.size();
+       vector<vector<int>>dp(n+1 , vector<int>(m+1 , -1) );
+       return  solve(n , m , s1 , s2 , dp);
+       
+    }
+};
+
+```
+</details>
+
+<br> 
+
+## [174. Dungeon Game](https://leetcode.com/problems/dungeon-game/submissions/969903884/) 
+
+> The demons had captured the princess and imprisoned her in the bottom-right corner of a dungeon. The dungeon consists of m x n rooms laid out in a 2D grid. Our valiant knight was initially positioned in the top-left room and must fight his way through dungeon to rescue the princess.
+The knight has an initial health point represented by a positive integer. If at any point his health point drops to 0 or below, he dies immediately.
+Some of the rooms are guarded by demons (represented by negative integers), so the knight loses health upon entering these rooms; other rooms are either empty (represented as 0) or contain magic orbs that increase the knight's health (represented by positive integers).
+To reach the princess as quickly as possible, the knight decides to move only rightward or downward in each step.
+Return the knight's minimum initial health so that he can rescue the princess.
+Note that any room can contain threats or power-ups, even the first room the knight enters and the bottom-right room where the princess is imprisoned
+
+- [Best Explanation of DP Approach ](https://leetcode.com/problems/dungeon-game/solutions/745340/post-dedicated-to-beginners-of-dp-or-have-no-clue-how-to-start/)
+
+<code >Logic</code>
+
+```quote
+
+1. Think of Recursion 
+2. like what is the Base Case
+3. Think like you have 1D array means last row
+4. so for this if we have mat[i][j] <= we need to 1 + (- mat[i][j])
+5. is at anypoint our helath is become negative we need minimum 1
+6. calculation taking min of left and right health 
+7. Check out REcurssion code for more understanding 
+```
+[Code Link](./08-Dungeon-games.cpp)
+
+<details><summary>Recursion + Memoization</summary>
+
+```cpp
+
+ class Solution {
+public: 
+    int solve(int  i ,int  j , int n , int m , vector<vector<int>>& dungeon , vector<vector<int>>&dp){
+
+        //Base Case
+        if(i == n || j == m)return 1e9;
+        if(i == n-1 and j == m - 1){
+            return dungeon[i][j] < 0 ? 1 - dungeon[i][j] : 1;
+        }
+
+        if(dp[i][j] != -1)return dp[i][j];
+
+        int left = solve(i , j+1 , n , m , dungeon , dp);
+        int right = solve(i+1 , j , n , m , dungeon , dp);
+
+        int minHealth = min(left , right) - dungeon[i][j];
+
+        return dp[i][j] =  minHealth <= 0 ? 1 : minHealth;
+    }
+    int calculateMinimumHP(vector<vector<int>>& dungeon) {
+        int n = dungeon.size(), m = dungeon[0].size();
+        vector<vector<int>> dp(n  , vector<int>(m , -1));
+        return solve(0 , 0, n , m , dungeon , dp);
+    }
+};
+
+```
+</details>
+
+<details><summary>Tabulation</summary>
+
+```cpp
+
+class Solution {
+public: 
+    int calculateMinimumHP(vector<vector<int>>& dungeon) {
+        int n = dungeon.size(), m = dungeon[0].size();
+        vector<vector<int>> dp(n +1 , vector<int>(m+1 , 1e9));
+        for(int i = n -1 ; i>= 0; i--){
+            for(int j = m - 1;  j>= 0 ; j--){
+                if(i == n-1 and j == m-1) dp[i][j] = dungeon[i][j] < 0 ? 1 - dungeon[i][j] : 1;
+                else{
+                    int left = dp[i][j+1];
+                    int right = dp[i+1][j];
+                    int minHealth = min(left , right) - dungeon[i][j];
+                    dp[i][j] =  minHealth <= 0 ? 1 : minHealth;
+                }
+            }
+        }
+        return dp[0][0];
+    }
+};
+
+```
+</details>
+
+<details><summary>Space Optimized</summary>
+
+```cpp
+
+class Solution {
+public: 
+    int calculateMinimumHP(vector<vector<int>>& dungeon) {
+        int n = dungeon.size(), m = dungeon[0].size();
+        // vector<vector<int>> dp(n +1 , vector<int>(m+1 , 1e9));
+        vector<int>prev(m+1 , 1e9) , curr(m+1 , 1e9);
+        for(int i = n -1 ; i>= 0; i--){
+            for(int j = m - 1;  j>= 0 ; j--){
+                if(i == n-1 and j == m-1) curr[j] = dungeon[i][j] < 0 ? 1 - dungeon[i][j] : 1;
+                else{
+                    int left = curr[j+1];
+                    int right = prev[j];
+                    int minHealth = min(left , right) - dungeon[i][j];
+                   curr[j] =  minHealth <= 0 ? 1 : minHealth;
+                }
+                prev = curr;
+            }
+        }
+        return prev[0];
+    }
+};
+
+```
+</details>
+
+<br> 
+<br> 
+
+
 <!-- 
 
-# Day 7
+# Day 9
 ## []() 
 
 > Statement
