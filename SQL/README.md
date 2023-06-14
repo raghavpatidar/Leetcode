@@ -30,6 +30,9 @@
 - [Day 9](#day-9)
   - [1050. Actors and Directors Who Cooperated At Least Three Times](#1050-actors-and-directors-who-cooperated-at-least-three-times)
   - [1068. Product Sales Analysis I](#1068-product-sales-analysis-i)
+- [Day 10](#day-10)
+  - [1075. Project Employees I](#1075-project-employees-i)
+  - [1084. Sales Analysis III](#1084-sales-analysis-iii)
 
 
 # Day 1
@@ -990,9 +993,149 @@ ON p.product_id = s.product_id
  
 
 
-<!-- 
 
 # Day 10
+
+## [1075. Project Employees I](https://leetcode.com/problems/project-employees-i/)
+
+> Write an SQL query that reports the average experience years of all the employees for each project, rounded to 2 digits.
+Return the result table in any order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```text
+
+Table: Project
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| project_id  | int     |
+| employee_id | int     |
++-------------+---------+
+(project_id, employee_id) is the primary key of this table.
+employee_id is a foreign key to Employee table.
+Each row of this table indicates that the employee with employee_id is working on the project with project_id.
+ 
+
+Table: Employee
+
++------------------+---------+
+| Column Name      | Type    |
++------------------+---------+
+| employee_id      | int     |
+| name             | varchar |
+| experience_years | int     |
++------------------+---------+
+employee_id is the primary key of this table. It's guaranteed that experience_years is not NULL.
+Each row of this table contains information about one employee.
+ 
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+
+
+SELECT project.project_id,  ROUND(SUM(employee.experience_years)/COUNT(employee.employee_id),2) AS average_years
+FROM employee
+JOIN project ON project.employee_id = employee.employee_id
+GROUP BY project.project_id;
+
+
+-- inner join
+
+
+SELECT 
+    p.project_id,
+    ROUND(AVG(e.experience_years), 2) AS average_years
+FROM
+    Project p 
+    INNER JOIN Employee e ON e.employee_id = p.employee_id
+GROUP BY p.project_id;
+
+
+
+```
+</br>
+ 
+
+
+
+
+
+
+## [1084. Sales Analysis III](https://leetcode.com/problems/sales-analysis-iii/)
+
+> Write an SQL query that reports the products that were only sold in the first quarter of 2019. That is, between 2019-01-01 and 2019-03-31 inclusive.
+Return the result table in any order.
+The query result format is in the following example 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```text
+
+Table: Product
+
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| product_id   | int     |
+| product_name | varchar |
+| unit_price   | int     |
++--------------+---------+
+product_id is the primary key of this table.
+Each row of this table indicates the name and the price of each product.
+Table: Sales
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| seller_id   | int     |
+| product_id  | int     |
+| buyer_id    | int     |
+| sale_date   | date    |
+| quantity    | int     |
+| price       | int     |
++-------------+---------+
+This table has no primary key, it can have repeated rows.
+product_id is a foreign key to the Product table.
+Each row of this table contains some information about one sale.
+ 
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+SELECT product_id , product_name
+FROM 
+    Product  
+WHERE 
+    product_id NOT IN 
+        (
+            SELECT product_id
+            FROM Product
+            LEFT JOIN Sales USING(product_id)
+            WHERE sale_date < '2019-01-01' OR sale_date > '2019-03-31' OR sale_date IS Null
+        )
+
+```
+</br>
+ 
+
+
+<!-- 
+
+# Day 11
 
 ## [Question]()
 
