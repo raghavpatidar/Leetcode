@@ -33,6 +33,9 @@
 - [Day 10](#day-10)
   - [1075. Project Employees I](#1075-project-employees-i)
   - [1084. Sales Analysis III](#1084-sales-analysis-iii)
+- [Day 11](#day-11)
+  - [511. Game Play Analysis I](#511-game-play-analysis-i)
+  - [1141. User Activity for the Past 30 Days I](#1141-user-activity-for-the-past-30-days-i)
 
 
 # Day 1
@@ -42,7 +45,7 @@
 
 <details><summary>Schema</summary>
 
-```text
+```sql
 Table: Person
 +-------------+---------+
 | Column Name | Type    |
@@ -83,7 +86,7 @@ select firstName, lastName , city , state from Person as p left join Address as 
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 Table:  Employee
 
 +-------------+---------+
@@ -115,7 +118,7 @@ select e.name as Employee from employee as e inner join employee as m on e.manag
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 Table: Person
 
 +-------------+---------+
@@ -143,7 +146,7 @@ having count(email) > 1;
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 Table: Customers
 
 +-------------+---------+
@@ -197,7 +200,7 @@ where o.id is null;
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 Table: Employee
 
 +--------------+---------+
@@ -301,7 +304,7 @@ select distinct num ConsecutiveNums from cte where (num=next) and (num=next2next
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 
 Table: Weather
 
@@ -336,7 +339,7 @@ WHERE w1.temperature > w2.temperature
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 
 Table: Person
 
@@ -393,7 +396,7 @@ The query result format is in the following example.
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 
 Table: Employee
 
@@ -449,7 +452,7 @@ The query result format is in the following example.
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 
 
 Table: Customer
@@ -499,7 +502,7 @@ The query result format is in the following example.
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 
 Table: Orders
 
@@ -561,7 +564,7 @@ FROM orders
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 
 
 Table: World
@@ -602,7 +605,7 @@ The query result format is in the following example.
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 Table: Courses
 
 +-------------+---------+
@@ -641,7 +644,7 @@ The query result format is in the following example.
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 
 able: SalesPerson
 
@@ -723,7 +726,7 @@ The query result format is in the following example.
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 
 Table: Triangle
 
@@ -772,7 +775,7 @@ The query result format is in the following example.
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 
 Table: Salary
 
@@ -823,7 +826,7 @@ The query result format is in the following example.
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 
 Table: Cinema
 
@@ -867,7 +870,7 @@ The query result format is in the following example.
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 
 Table: MyNumbers
 
@@ -908,7 +911,7 @@ The query result format is in the following example.
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 
 Table: ActorDirector
 
@@ -945,7 +948,7 @@ The query result format is in the following example.
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 
 Table: Sales
 
@@ -1006,7 +1009,7 @@ The query result format is in the following example.
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 
 Table: Project
 
@@ -1080,7 +1083,7 @@ The query result format is in the following example
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 
 Table: Product
 
@@ -1130,12 +1133,103 @@ WHERE
 
 ```
 </br>
+</br>
+ 
+
+
+
+
+# Day 11
+
+## [511. Game Play Analysis I](https://leetcode.com/problems/game-play-analysis-i/)
+
+> Write an SQL query to report the first login date for each player.
+Return the result table in any order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Activity
+
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| player_id    | int     |
+| device_id    | int     |
+| event_date   | date    |
+| games_played | int     |
++--------------+---------+
+(player_id, event_date) is the primary key of this table.
+This table shows the activity of players of some games.
+Each row is a record of a player who logged in and played a number of games (possibly 0) before logging out on someday using some device.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+SELECT player_id , min(event_date) AS first_login
+FROM Activity
+GROUP BY player_id
+
+```
+</br>
+ 
+
+ 
+
+## [1141. User Activity for the Past 30 Days I](https://leetcode.com/problems/user-activity-for-the-past-30-days-i/description/)
+
+> Write an SQL query to find the daily active user count for a period of 30 days ending 2019-07-27 inclusively. A user was active on someday if they made at least one activity on that day.
+Return the result table in any order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Activity
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| user_id       | int     |
+| session_id    | int     |
+| activity_date | date    |
+| activity_type | enum    |
++---------------+---------+
+There is no primary key for this table, it may have duplicate rows.
+The activity_type column is an ENUM of type ('open_session', 'end_session', 'scroll_down', 'send_message').
+The table shows the user activities for a social media website. 
+Note that each session belongs to exactly one user.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+SELECT activity_date AS day , count(distinct user_id) AS active_users
+FROM Activity  
+GROUP BY activity_date
+HAVING activity_date BETWEEN '2019-06-28' AND '2019-07-27'
+
+```
+</br>
+</br>
  
 
 
 <!-- 
 
-# Day 11
+# Day 12
 
 ## [Question]()
 
@@ -1145,7 +1239,7 @@ WHERE
 <details>
 <summary>Schema</summary>
 
-```text
+```sql
 schema
 ```
 </details>
