@@ -36,6 +36,9 @@
 - [Day 11](#day-11)
   - [511. Game Play Analysis I](#511-game-play-analysis-i)
   - [1141. User Activity for the Past 30 Days I](#1141-user-activity-for-the-past-30-days-i)
+- [Day 12](#day-12)
+  - [1148. Article Views I](#1148-article-views-i)
+  - [1179. Reformat Department Table](#1179-reformat-department-table)
 
 
 # Day 1
@@ -1227,6 +1230,109 @@ HAVING activity_date BETWEEN '2019-06-28' AND '2019-07-27'
  
 
 
+
+
+# Day 12
+
+## [1148. Article Views I](https://leetcode.com/problems/article-views-i/)
+
+> Write an SQL query to find all the authors that viewed at least one of their own articles.
+Return the result table sorted by id in ascending order.
+The query result format is in the following example.
+
+  
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Views
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| article_id    | int     |
+| author_id     | int     |
+| viewer_id     | int     |
+| view_date     | date    |
++---------------+---------+
+There is no primary key for this table, it may have duplicate rows.
+Each row of this table indicates that some viewer viewed an article (written by some author) on some date. 
+Note that equal author_id and viewer_id indicate the same person.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+SELECT distinct author_id as id 
+FROM Views 
+WHERE author_id = viewer_id 
+ORDER BY id
+
+```
+</br>
+ 
+
+## [1179. Reformat Department Table](https://leetcode.com/problems/reformat-department-table/)
+
+> Write an SQL query to reformat the table such that there is a department id column and a revenue column for each month.
+Return the result table in any order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Department
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| revenue     | int     |
+| month       | varchar |
++-------------+---------+
+(id, month) is the primary key of this table.
+The table has information about the revenue of each department per month.
+The month has values in ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"].
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+
+SELECT id,
+SUM( IF ( month='Jan' , revenue , null )) AS Jan_Revenue,
+SUM( IF ( month='Feb' , revenue , null )) AS Feb_Revenue,
+SUM( IF ( month='Mar' , revenue , null )) AS Mar_Revenue,
+SUM( IF ( month='Apr' , revenue , null )) AS Apr_Revenue,
+SUM( IF ( month='May' , revenue , null )) AS May_Revenue,
+SUM( IF ( month='Jun' , revenue , null )) AS Jun_Revenue,
+SUM( IF ( month='Jul' , revenue , null )) AS Jul_Revenue,
+SUM( IF ( month='Aug' , revenue , null )) AS Aug_Revenue,
+SUM( IF ( month='Sep' , revenue , null )) AS Sep_Revenue,
+SUM( IF ( month='Oct' , revenue , null )) AS Oct_Revenue,
+SUM( IF ( month='Nov' , revenue , null )) AS Nov_Revenue,
+SUM( IF ( month='Dec' , revenue , null )) AS Dec_Revenue
+FROM Department
+GROUP BY id;
+
+
+
+```
+</br>
+</br>
+ 
+
+
 <!-- 
 
 # Day 12
@@ -1240,13 +1346,17 @@ HAVING activity_date BETWEEN '2019-06-28' AND '2019-07-27'
 <summary>Schema</summary>
 
 ```sql
+
 schema
+
 ```
 </details>
 <code >Query</code>
 
 ```sql
+
 query
+
 ```
 </br>
  
