@@ -28,6 +28,9 @@
 - [Day 8](#day-8)
   - [712. Minimum ASCII Delete Sum for Two Strings](#712-minimum-ascii-delete-sum-for-two-strings)
   - [174. Dungeon Game](#174-dungeon-game)
+- [Day 9](#day-9)
+  - [978. Longest Turbulent Subarray](#978-longest-turbulent-subarray)
+  - [1039. Minimum Score Triangulation of Polygon](#1039-minimum-score-triangulation-of-polygon)
 
 
 
@@ -1121,9 +1124,136 @@ public:
 <br> 
 
 
-<!-- 
+
 
 # Day 9
+## [978. Longest Turbulent Subarray](https://leetcode.com/problems/longest-turbulent-subarray/) 
+
+>  Given an integer array arr, return the length of a maximum size turbulent subarray of arr.
+> A subarray is turbulent if the comparison sign flips between each adjacent pair of elements in the subarray.
+> More formally, a subarray [arr[i], arr[i + 1], ..., arr[j]] of arr is said to be turbulent if and only if:
+> - For i <= k < j:
+>   - arr[k] > arr[k + 1] when k is odd, and
+>   - arr[k] < arr[k + 1] when k is even.
+> - Or, for i <= k < j:
+>   - arr[k] > arr[k + 1] when k is even, and
+>   - arr[k] < arr[k + 1] when k is odd.
+ 
+
+<code >Logic</code>
+
+```quote
+
+1. Think of Lis Pattern in dp
+2. we can use another dp state which is prev tell we have to pick greater or smaller on current index
+3. dp[idx][prev][]
+
+```
+[Code Link](./09-longest-Turbulent-Subarray.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    vector<vector<int>> dp;
+    int solve(vector<int>&v,int i , bool t ,int prev)
+    {
+        if(i==v.size())
+          return 0;
+        if(dp[prev][t]!=-1)
+            return dp[prev][t];
+        if(prev==0)
+        {
+    return dp[prev][t]=max({1+solve(v,i+1,0,i+1),1+solve(v,i+1,1,i+1),solve(v,i+1,t,prev)});
+        }
+        else if(t==0)
+        {
+            if(v[i]<v[prev-1])
+                return dp[prev][t]=1+solve(v,i+1,1,i+1);
+        }
+        else
+        {
+            if(v[i]>v[prev-1])
+                return dp[prev][t]=1+solve(v,i+1,0,i+1);
+        }
+         return dp[prev][t]=0;
+    }
+    int maxTurbulenceSize(vector<int>& arr)
+    {
+       int n=arr.size();
+        dp.resize(n+1,vector<int>(3,-1));
+       return solve(arr,0,0,0);                     
+    }
+};
+
+```
+</details>
+
+<br> 
+
+ 
+## [1039. Minimum Score Triangulation of Polygon](https://leetcode.com/problems/minimum-score-triangulation-of-polygon/) 
+
+> - You have a convex n-sided polygon where each vertex has an integer value. You are given an integer array values where values[i] is the value of the ith vertex (i.e., clockwise order).
+You will triangulate the polygon into n - 2 triangles. For each triangle, the value of that triangle is the product of the values of its vertices, and the total score of the triangulation is the sum of these values over all n - 2 triangles in the triangulation.
+Return the smallest possible total score that you can achieve with some triangulation of the polygon.
+
+<code >Logic</code>
+
+```python
+
+1. Think of MCM pattern
+2. WE can Fix i, j are take max from subary [i,k] and [k+1 , j]
+3. and current score is arr[i-1]*arr[k]*arr[j]
+
+4. approach - > 
+5. Base Case
+6. Range Block [i to j]
+7. K Range [k=i to k=j-1] 
+8. find Score and call sub prblems 
+9. return mini of all possible cases
+
+
+```
+[Code Link](./09-Minimum-Score-Tringulation-ofPolygon.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    int solve(int i , int j , vector<int>&arr , vector<vector<int>>&dp){
+        if(i >= j )return 0;
+
+        if(dp[i][j] != -1)return dp[i][j];
+
+        int mini = 1e9;
+        for(int k = i; k <= j -1; k++){
+            int temp = arr[i-1]*arr[k]*arr[j] + solve(i , k , arr , dp) + solve(k+1 , j , arr,  dp );
+            mini = min(mini , temp);
+        }
+        return dp[i][j] =  mini;
+    }
+    int minScoreTriangulation(vector<int>& values) {
+        int n = values.size();
+        vector<vector<int>>dp(n , vector<int>(n, -1));
+        return solve(1 , n-1 , values, dp);
+    }
+};
+
+
+```
+</details>
+
+<br> 
+
+ 
+<!-- 
+
+# Day 10
 ## []() 
 
 > Statement
