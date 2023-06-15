@@ -7,6 +7,9 @@
 - [Day 1](#day-1)
   - [310. Minimum Height Trees](#310-minimum-height-trees)
   - [684. Redundant Connection](#684-redundant-connection)
+- [Day 2](#day-2)
+  - [1042. Flower Planting With No Adjacent](#1042-flower-planting-with-no-adjacent)
+  - [1361. Validate Binary Tree Nodes](#1361-validate-binary-tree-nodes)
 
 
 
@@ -98,7 +101,7 @@ Return an edge that can be removed so that the resulting graph is a tree of n no
 2. Union Find --> add Edge if they are not added else if they alredy connected then return the current edges as it is our redundant edge.
 
 ```
-[Code Link](./CodeGraph/02-Redundant-Connection.cpp)
+[Code Link](./CodeGraph/01-Redundant-Connection.cpp)
 
 <details><summary>Code</summary>
 
@@ -185,9 +188,161 @@ public:
 <br> 
 
 
+
+# Day 2
+
+## [1042. Flower Planting With No Adjacent](https://leetcode.com/problems/flower-planting-with-no-adjacent/) 
+
+> - You have n gardens, labeled from 1 to n, and an array paths where paths[i] = [xi, yi] describes a bidirectional path between garden xi to garden yi. In each garden, you want to plant one of 4 types of flowers.
+> - All gardens have at most 3 paths coming into or leaving it.
+> - Your task is to choose a flower type for each garden such that, for any two gardens connected by a path, they have different types of flowers.
+> - Return any such a choice as an array answer, where answer[i] is the type of flower planted in the (i+1)th garden. The flower types are denoted 1, 2, 3, or 4. It is guaranteed an answer exists.
+
+ 
+
+<code >Logic</code>
+
+```quote
+
+1. Start Dfs
+2. pur color of node such that it's child don't have that color 
+
+
+```
+[Code Link](./CodeGraph/02-flowering-no-adjacent-plants.cpp)
+
+<details><summary>Code</summary>
+
+```cpp
+
+class Solution {
+public:
+    int dfs(int node , vector<int> adj[] , vector<int>&ans , vector<int>&vis){
+        // cout<<"node "<<node<<"\n";
+        vis[node] = 1;
+        int temp[5] = {0};
+        for(auto i : adj[node]){
+            if(vis[i] == 0){
+
+               int col =  dfs(i , adj , ans , vis);
+            //    cout<<"child "<<i <<" "<<col<<endl;
+               temp[col] = 1;
+            }else{
+                temp[ans[i]] = 1;
+            }
+        }
+
+
+        for(int i = 1 ; i<= 4;i++){
+            if(temp[i] == 0 ){
+                ans[node] = i;
+                break;
+            }
+        }
+
+        // cout<<" col - "<<node<<"-->"<<ans[node]<<endl;
+
+        return ans[node];
+       
+
+    }
+    vector<int> gardenNoAdj(int n, vector<vector<int>>& paths) {
+        vector<int> adj[n+1] , vis(n+1 , 0) , ans(n+1 , 0);
+        for(auto i : paths){
+            int u = i[0] , v= i[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        for(int i = 1 ; i<= n ;i++){
+            if(vis[i] == 0){
+                dfs(i , adj , ans , vis);
+            }
+        }
+        ans.erase(ans.begin());
+        return ans;
+    }
+};
+
+
+
+// 1----2
+// |\  /|
+// | \/ |
+// | /\ |
+// |/  \|
+// 4----3
+
+```
+</details>
+
+<br> 
+
+
+
+
+## [1361. Validate Binary Tree Nodes](https://leetcode.com/problems/validate-binary-tree-nodes/) 
+
+> - You have n binary tree nodes numbered from 0 to n - 1 where node i has two children leftChild[i] and rightChild[i], return true if and only if all the given nodes form exactly one valid binary tree.
+> - If node i has no left child then leftChild[i] will equal -1, similarly for the right child.
+> - Note that the nodes have no values and that we only use the node numbers in this problem.
+
+ 
+
+<code >Logic</code>
+
+```quote
+
+1. Condition1 : each node must have Single parent 
+2. Condition2 : only 1 Node have No parent which is root
+3. Condition3 : check for cycle or disconnected component such 
+                Such that dsa call from root node return total N child and N-1 edes must be present
+
+
+```
+[Code Link](./CodeGraph/02-validate-Binary-Tree.cpp)
+
+<details><summary>Code</summary>
+
+```cpp
+
+class Solution {
+public:
+    // Idea: A valid BT has each node with exactly one parent and exactly one node with no parent (root)
+    bool validateBinaryTreeNodes(int n, vector<int>& leftChild, vector<int>& rightChild) {
+        // map to keep count of no. of parent for each node
+        vector<int> parentFreq(n);
+        for (int i = 0; i < n; i++)
+            if ((leftChild[i] >= 0 and ++parentFreq[leftChild[i]] > 1) or (rightChild[i] >= 0 and ++parentFreq[rightChild[i]] > 1))
+                return false;
+        // find root (if more than 1 root exist then return false)
+        int root = -1;
+        for (int i = 0; i < n; i++)
+            if (!parentFreq[i]) {
+                if (root == -1)
+                    root = i;
+                else return false;
+            }
+        // last IMP check: apply dfs on root to calculate total nodes in tree, it should be n
+        return countNodes(leftChild, rightChild, root) == n;
+    }
+    
+    int countNodes(vector<int> &left, vector<int> &right, int root) {
+        if (root == -1)
+            return 0;
+        return 1 + countNodes(left, right, left[root]) + countNodes(left, right, right[root]);
+    }
+};
+
+
+```
+</details>
+
+<br> 
+<br> 
+
 <!-- 
 
-# Day 
+# Day 3
 
 ## []() 
 
