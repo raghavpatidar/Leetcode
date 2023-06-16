@@ -31,6 +31,9 @@
 - [Day 9](#day-9)
   - [978. Longest Turbulent Subarray](#978-longest-turbulent-subarray)
   - [1039. Minimum Score Triangulation of Polygon](#1039-minimum-score-triangulation-of-polygon)
+  - [1130. Minimum Cost Tree From Leaf Values](#1130-minimum-cost-tree-from-leaf-values)
+  - [1049. Last Stone Weight II](#1049-last-stone-weight-ii)
+  - [1218. Longest Arithmetic Subsequence of Given Difference](#1218-longest-arithmetic-subsequence-of-given-difference)
 
 
 
@@ -1251,9 +1254,218 @@ public:
 <br> 
 
  
+
+## [1130. Minimum Cost Tree From Leaf Values](https://leetcode.com/problems/minimum-cost-tree-from-leaf-values/) 
+
+> - Given an array arr of positive integers, consider all binary trees such that:
+
+> - Each node has either 0 or 2 children;
+> - The values of arr correspond to the values of each leaf in an in-order traversal of the tree.
+> - The value of each non-leaf node is equal to the product of the largest leaf value in its left and right subtree, respectively.
+> - Among all possible binary trees considered, return the smallest possible sum of the values of each non-leaf node. It is guaranteed this sum fits into a 32-bit integer.
+> - A node is a leaf if and only if it has zero children.
+
+<code >Logic</code>
+
+```quote
+
+1. Think of MCM pattern
+2. Solve for ith value 
+3. Think of base case if i == j 
+4. what is return type or our value we need to trak two thing current minimum sum and minimum value in it's array
+
+```
+[Code Link](./10-minimum-cost-tree-from-leaf-values.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+
+class Solution {
+public:
+    pair<int, int> solve(int i ,int j  , vector<int> &arr  , vector<vector<pair<int,int>>> &dp){
+           if(i == j )return {0 , arr[i]};
+           if(i > j )return {1e9 , 1};
+           if(dp[i][j] != make_pair(-1 , -1))return dp[i][j];
+           pair<int, int> mini = {1e9 ,1 };
+           for(int k = i  ; k < j; k++){
+               auto left = solve(i , k , arr , dp);
+               auto right = solve(k+1 , j, arr , dp);
+               pair<int, int> temp = {left.second * right.second , max(left.second , right.second)};
+               temp.first = temp.first +  left.first + right.first;
+               if(temp.first < mini.first){
+                   mini = temp;
+               }
+           }
+           return dp[i][j] =  mini;
+
+
+    }
+    int mctFromLeafValues(vector<int>& arr) {
+        int n = arr.size();
+        vector<vector<pair<int,int>>> dp(n , vector<pair<int,int>>(n , {-1 , -1}));
+        auto ans = solve(0 , arr.size()-1 , arr , dp);
+        return ans.first;
+
+    } 
+};
+
+```
+</details>
+
+<br> 
+
+
+## [1049. Last Stone Weight II](https://leetcode.com/problems/last-stone-weight-ii/) 
+
+> You are given an array of integers stones where stones[i] is the weight of the ith stone.
+
+> We are playing a game with the stones. On each turn, we choose any two stones and smash them together. Suppose the stones have weights x and y with x <= y. The result of this smash is:
+> If x == y, both stones are destroyed, and
+> If x != y, the stone of weight x is destroyed, and the stone of weight y has new weight y - x.
+> At the end of the game, there is at most one stone left.
+> Return the smallest possible weight of the left stone. If there are no stones left, return 0.
+
+<code >Logic</code>
+
+```quote
+
+or three number a1, a2, a3, according to the order of our choice,
+there are 8-2=6 different cases:
+ 
+- a1 - (a2 - a3) = a1 - a2 + a3
+- (a2 - a3) - a1 = -a1 + a2 - a3
+- a1 - (a3 - a2) = a1 + a2 - a3
+- (a3 - a2) - a1 = -a1 - a2 + a3
+- a2 - (a1 - a3) = -a1 + a2 + a3
+- (a1 - a3) - a2 = a1 - a2 - a3
+- a2 - (a3 - a1) = a1 + a2 - a3 same as case 3
+- (a3 - a1) - a2 = -a1 - a2 + a3 same as case 4
+- a3 - (a1 - a2) = -a1 + a2 + a3 same as case 5
+- (a1 - a2) - a3 = a1 - a2 - a3 same as case 6
+- a3 - (a2 - a1) = a1 - a2 + a3 same as case 1
+- (a2 - a1) - a3 = -a1 + a2 - a3 same as case 2
+- for each number, we can add '+' or '-' before it. there are totally 2^3 = 8 cases
+- but it cannot be all positive or all negtive, so it will decrease 2 cases.
+ 
+the answer is choose some numbers to be positive, others negtive.
+assume psum is the sum of positive number.
+Our goal is to minimize psum - (sum(stones)-psum) = 2*psum - sum(stones)
+
+
+So,
+  // p-->positive , n--> negative
+        // p + n = S
+        // p - n = mi
+        // 2P - S = mi
+        // all possible positive sum
+
+
+        we just need to find all possible P such that we can minimise 2P-S = mi
+        and keep then positve they can be negation also
+        Where P is subset which we are taking as postive sum 
+
+
+
+```
+[Code Link](./10-last-Stone-Weight-II.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    void allPositiveSum(int idx , vector<int>&stones , int curr , set<int>&ans ,vector<vector<int>> &dp){
+        if(idx == 0 ){
+            ans.insert(curr);
+            return;
+        }
+        if(dp[idx][curr] != -1 )return;
+        allPositiveSum(idx - 1 , stones , curr , ans , dp);
+        allPositiveSum(idx -1 , stones, curr + stones[idx-1] , ans , dp);
+
+        dp[idx][curr] = 1;
+    }
+    int lastStoneWeightII(vector<int>& stones) {
+        // p-->positive , n--> negative
+        // p + n = S
+        // p - n = mi
+        // 2P - S = mi
+        // all possible positive sum
+        int n = stones.size();
+        set<int> ans;
+        vector<vector<int>> dp (n+1 , vector<int> (3005 , -1));
+        allPositiveSum(n , stones , 0 , ans , dp);
+        cout<<ans.size()<<endl;
+        vector<int> pos;
+        int s = accumulate(stones.begin() , stones.end() , 0LL);
+        for(auto i : ans){
+                pos.push_back(abs(2*i - s));
+
+        }
+        
+        return *min_element(pos.begin() , pos.end());
+    }
+};
+
+```
+</details>
+
+<br> 
+
+
+
+## [1218. Longest Arithmetic Subsequence of Given Difference](https://leetcode.com/problems/longest-arithmetic-subsequence-of-given-difference/) 
+
+> Given an integer array arr and an integer difference, return the length of the longest subsequence in arr which is an arithmetic sequence such that the difference between adjacent elements in the subsequence equals difference.
+> A subsequence is a sequence that can be derived from arr by deleting some or no elements without changing the order of the remaining elements.
+
+<code >Logic</code>
+
+```quote
+
+1. At cuureent idx check we have arr[i] - diff element before if yes then
+2. add it's previous sequence count such that dp[arr[i]] =  dp[arr[i]-diff];
+3. else add 1 to dp[arr[i]] = 1;
+
+```
+[Code Link](./10-longest-arithmitic-subsequece.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    
+    int longestSubsequence(vector<int>& arr, int difference) {
+        int n = arr.size();
+        map<int , int> m ;
+        
+        int ans = 0;
+        for(int i = 0; i < n ; i++){
+            int x = arr[i] - difference;
+            if(m.count(x)){
+                m[arr[i]] =1 + m[x];
+            }else{
+                m[arr[i]] = 1;   
+            }
+            ans = max(ans , m[arr[i]]);
+        }
+        return ans;
+    }
+};
+
+```
+</details>
+
+<br> 
+
 <!-- 
 
-# Day 10
+# Day 11
 ## []() 
 
 > Statement
@@ -1273,5 +1485,5 @@ Code
 </details>
 
 <br> 
-
  -->
+
