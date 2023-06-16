@@ -10,6 +10,9 @@
 - [Day 2](#day-2)
   - [1042. Flower Planting With No Adjacent](#1042-flower-planting-with-no-adjacent)
   - [1361. Validate Binary Tree Nodes](#1361-validate-binary-tree-nodes)
+- [Day 3](#day-3)
+  - [2192. All Ancestors of a Node in a Directed Acyclic Graph](#2192-all-ancestors-of-a-node-in-a-directed-acyclic-graph)
+  - [1514. Path with Maximum Probability](#1514-path-with-maximum-probability)
 
 
 
@@ -340,9 +343,148 @@ public:
 <br> 
 <br> 
 
-<!-- 
+
 
 # Day 3
+
+## [2192. All Ancestors of a Node in a Directed Acyclic Graph](https://leetcode.com/problems/all-ancestors-of-a-node-in-a-directed-acyclic-graph/) 
+
+> You are given a positive integer n representing the number of nodes of a Directed Acyclic Graph (DAG). The nodes are numbered from 0 to n - 1 (inclusive).
+You are also given a 2D integer array edges, where edges[i] = [fromi, toi] denotes that there is a unidirectional edge from fromi to toi in the graph.
+eturn a list answer, where answer[i] is the list of ancestors of the ith node, sorted in ascending order.
+A node u is an ancestor of another node v if u can reach v via a set of edges.
+
+ 
+
+<code >Logic</code>
+
+```quote
+
+1. TReverse All edges Such that parent of each node become child od each node
+2. WE can now do dfs and keep track of child node 
+
+
+```
+[Code Link](./CodeGraph/03-all-ancestor-in-DAG.cpp)
+
+<details><summary>Code</summary>
+
+```cpp
+
+class Solution {
+public:
+    void addAncestor(int node , int ancestor , vector<set<int>>&ans){
+        for(auto i : ans[ancestor]){
+            ans[node].insert(i);
+        }
+        ans[node].insert(ancestor);
+    } 
+   void dfs(int node  , vector<int> adj[] , vector<set<int>>&ans , vector<int>&vis){
+        vis[node] = 1;
+        
+        for(auto child : adj[node]){
+            if(vis[child] == 0 ){
+                dfs(child  , adj , ans , vis);
+                //go do dfs then add result to our answer list
+            }
+            addAncestor(node , child , ans);
+        }
+    }
+    vector<vector<int>> getAncestors(int n, vector<vector<int>>& edges) {
+        vector<int> adj[n] , vis(n , 0) , in(n, 0);
+        for(auto i: edges){
+            int u = i[0] , v = i[1];
+            adj[v].push_back(u);
+            in[u]++;
+        }
+        vector<set<int>> ans(n);
+        vector<vector<int>> v(n);
+        for(int i = 0; i < n ; i++){
+            if(in[i] == 0){
+                dfs(i , adj , ans , vis);
+            }
+        }
+        for(int i = 0; i < n ; i++){
+            for(auto j : ans[i]){
+                v[i].push_back(j);
+            }
+        }
+        return v;
+    }
+};
+
+```
+</details>
+
+<br> 
+
+
+
+
+## [1514. Path with Maximum Probability](https://leetcode.com/problems/path-with-maximum-probability/) 
+
+> You are given an undirected weighted graph of n nodes (0-indexed), represented by an edge list where edges[i] = [a, b] is an undirected edge connecting the nodes a and b with a probability of success of traversing that edge succProb[i].
+Given two nodes start and end, find the path with the maximum probability of success to go from start to end and return its success probability.
+If there is no path from start to end, return 0. Your answer will be accepted if it differs from the correct answer by at most 1e-5.
+
+<code >Logic</code>
+
+```quote
+
+1. Updated Dijkstr's Algo where we imporve check condition
+2. dist[child] + w < dist[node] we change it to
+3. dist[child]*w < dist[node] condtion 
+
+```
+[Code Link](./CodeGraph/03-maximum-probability.cpp)
+
+<details><summary>Code</summary>
+
+```cpp
+
+
+class Solution {
+public:
+    double maxProbability(int n, vector<vector<int>>& edges, vector<double>& succProb, int start, int end) {
+        vector<pair<int, double>> adj[n];
+        int k =0;
+        for(auto i : edges){
+            int u = i[0], v = i[1] ;
+            double w = succProb[k++];
+            adj[u].push_back({v , w});
+            adj[v].push_back({u , w});
+        }
+        priority_queue< pair<int,double> , vector<pair<int,double>> , greater<pair<int,double>> > pq;
+        pq.push({start , 1.0});
+        vector<double> dist(n , 0.0);
+        while(pq.size()>0){
+            int curr = pq.top().first;
+            double d = pq.top().second;
+            pq.pop();
+            
+            for(auto i : adj[curr]){
+                double childDist = d* i.second;
+                int child = i.first;
+               
+                if(childDist > dist[child]){
+                    dist[child] = childDist;
+                    pq.push({child , dist[child]});
+                }
+            }
+        }
+        return dist[end];
+    }
+};
+
+```
+</details>
+
+<br>  
+<br>  
+
+<!-- 
+
+# Day 4
 
 ## []() 
 
