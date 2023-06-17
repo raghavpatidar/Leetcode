@@ -39,6 +39,9 @@
 - [Day 12](#day-12)
   - [1148. Article Views I](#1148-article-views-i)
   - [1179. Reformat Department Table](#1179-reformat-department-table)
+- [Day 12](#day-12-1)
+  - [1211. Queries Quality and Percentage](#1211-queries-quality-and-percentage)
+  - [1251. Average Selling Price](#1251-average-selling-price)
 
 
 # Day 1
@@ -1331,11 +1334,125 @@ GROUP BY id;
 </br>
 </br>
  
+# Day 12
+
+## [1211. Queries Quality and Percentage](https://leetcode.com/problems/queries-quality-and-percentage/description/)
+
+> We define query quality as:
+> - The average of the ratio between query rating and its position
+> We also define poor query percentage as:
+> - The percentage of all queries with rating less than 3.
+> Write an SQL query to find each query_name, the quality and poor_query_percentage.
+> Both quality and poor_query_percentage should be rounded to 2 decimal places.
+> Return the result table in any order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Queries
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| query_name  | varchar |
+| result      | varchar |
+| position    | int     |
+| rating      | int     |
++-------------+---------+
+There is no primary key for this table, it may have duplicate rows.
+This table contains information collected from some queries on a database.
+The position column has a value from 1 to 500.
+The rating column has a value from 1 to 5. Query with rating less than 3 is a poor query.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+
+SELECT 
+  query_name , 
+  ROUND((sum(rating/position)/count(*)),2) AS quality , 
+  ROUND( AVG(rating<3)*100,2) AS poor_query_percentage 
+FROM 
+  Queries 
+GROUP BY 
+  query_name
+
+```
+</br>
+ 
+
+
+
+
+## [1251. Average Selling Price](https://leetcode.com/problems/average-selling-price/description/)
+
+> Write an SQL query to find the average selling price for each product. average_price should be rounded to 2 decimal places.
+Return the result table in any order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Prices
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| product_id    | int     |
+| start_date    | date    |
+| end_date      | date    |
+| price         | int     |
++---------------+---------+
+(product_id, start_date, end_date) is the primary key for this table.
+Each row of this table indicates the price of the product_id in the period from start_date to end_date.
+For each product_id there will be no two overlapping periods. That means there will be no two intersecting periods for the same product_id.
+ 
+
+Table: UnitsSold
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| product_id    | int     |
+| purchase_date | date    |
+| units         | int     |
++---------------+---------+
+There is no primary key for this table, it may contain duplicates.
+Each row of this table indicates the date, units, and product_id of each product sold. 
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+SELECT p.product_id , ROUND(SUM( u.units * p.price)/SUM(u.units) , 2) as average_price 
+FROM Prices p 
+INNER JOIN UnitsSold u
+ON p.product_id = u.product_id
+WHERE u.purchase_date BETWEEN p.start_date AND p.end_date
+GROUP BY p.product_id
+
+```
+</br>
+</br>
+ 
+
 
 
 <!-- 
 
-# Day 12
+# Day 13
 
 ## [Question]()
 
@@ -1359,6 +1476,6 @@ query
 
 ```
 </br>
+</br>
  
-
  -->
