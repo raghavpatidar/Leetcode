@@ -13,6 +13,10 @@
 - [Day 3](#day-3)
   - [2192. All Ancestors of a Node in a Directed Acyclic Graph](#2192-all-ancestors-of-a-node-in-a-directed-acyclic-graph)
   - [1514. Path with Maximum Probability](#1514-path-with-maximum-probability)
+- [Day 4](#day-4)
+  - [1584. Min Cost to Connect All Points](#1584-min-cost-to-connect-all-points)
+  - [1462. Course Schedule IV](#1462-course-schedule-iv)
+  - [1311. Get Watched Videos by Your Friends](#1311-get-watched-videos-by-your-friends)
 
 
 
@@ -482,9 +486,301 @@ public:
 <br>  
 <br>  
 
-<!-- 
+
 
 # Day 4
+
+## [1584. Min Cost to Connect All Points](https://leetcode.com/problems/min-cost-to-connect-all-points/) 
+
+> You are given an array points representing integer coordinates of some points on a 2D-plane, where points[i] = [xi, yi].
+The cost of connecting two points [xi, yi] and [xj, yj] is the manhattan distance between them: |xi - xj| + |yi - yj|, where |val| denotes the absolute value of val.
+Return the minimum cost to make all points connected. All points are connected if there is exactly one simple path between any two points.
+
+<code >Logic</code>
+
+```quote
+
+1. Find Mst of Connect  all possible edges
+2. Prime's Algo
+3. Krushkal algo
+
+```
+[Code Link](./CodeGraph/04-min-cost-to-connect-all-points.cpp)
+
+<details><summary>Code</summary>
+
+```cpp
+
+
+#define pll pair<int,int>
+class Solution {
+public:
+    int parent[1005];
+    int find(int n){
+        if(parent[n] == n )return n;
+        return parent[n] = find(parent[n]);
+    }
+    void unite(int a , int b){
+        int parA = find(a);
+        int parB = find(b);
+        parent[parA] = parB;
+    }
+    int krushkals(vector<vector<int>>& points){
+        for(int i = 0; i < points.size();i++)parent[i] = i;
+        vector<pair<int, pair<int, int>>> adj;
+        
+        int n = points.size();
+        // generating graph basically with weights
+        for(int i = 0; i < n; i++)
+        {
+            for(int j = i + 1; j < n; j++)
+            {
+                int weight = abs(points[i][0] - points[j][0]) + 
+                             abs(points[i][1] - points[j][1]);//manhattan distance
+                
+                adj.push_back({weight, {i, j}});
+                
+            }
+        }
+        
+        // sort on the basis of their edge weight
+        sort(adj.begin(), adj.end());
+        int sum = 0; 
+        for(int i = 0; i < adj.size();i++){
+            int a = adj[i].second.first;
+            int b = adj[i].second.second;
+            if(find(a) != find(b)){
+                unite(a , b);
+                sum += adj[i].first;
+            }
+        }
+        return sum;
+    }
+
+    int prims(vector<vector<int>>& points){
+        priority_queue<pll , vector<pll> , greater<pll> >pq;
+        pq.push({0 , 0});
+        int sum = 0;
+        vector<int> vis(points.size()  , 0);
+        while(pq.size()>0){
+            int wt = pq.top().first;
+            int idx = pq.top().second;
+            int currX = points[idx][0];
+            int currY = points[idx][1];
+            pq.pop();
+            if(vis[idx] == 1 )continue;
+
+
+            vis[idx] = 1;
+            sum += wt;
+
+            for(int i = 0 ; i < points.size();i++){
+                int childX = points[i][0];
+                int childY = points[i][1];
+                int childWt = abs(childX-currX) + abs(childY - currY);
+                if(vis[i] == 0){
+                    pq.push({ childWt , i });
+                }
+            }
+
+        }
+        return sum;
+    }
+    
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        // return prims(points);
+        return krushkals(points);
+
+    }
+};
+
+```
+</details>
+
+<br> 
+
+
+
+## [1462. Course Schedule IV](https://leetcode.com/problems/course-schedule-iv/) 
+
+> There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course ai first if you want to take course bi.
+For example, the pair [0, 1] indicates that you have to take course 0 before you can take course 1.
+Prerequisites can also be indirect. If course a is a prerequisite of course b, and course b is a prerequisite of course c, then course a is a prerequisite of course c.
+You are also given an array queries where queries[j] = [uj, vj]. For the jth query, you should answer whether course uj is a prerequisite of course vj or not.
+Return a boolean array answer, where answer[j] is the answer to the jth query.
+
+<code >Logic</code>
+
+```quote
+Floyd Warshal
+1 Approach 1:  - we can think of all pair shortest path
+               - all element exact digonal is inf then add all u->v dist 1
+               - using flyod warshall algo 
+               - find distance via path
+               
+TopoSort
+2 Approach 2:  - another optimal approach is to use topological sort
+               - find ordered for topo sort
+               - for each node in order we can add it's child: adj[curr] 
+               - pair to our matrix such that matrix[curr][child] = 1;
+               - and we need to do this for all nodes such that for each node
+               - Time-> O(V*E) Space O(V^2)
+
+
+```
+[Code Link](./CodeGraph/04-course-schedule-IV.cpp)
+
+<details><summary>Code</summary>
+
+```cpp
+
+// another optimal approach is to use topological sort
+// find ordered for topo sort
+// for each node in order we can add it's child: adj[curr] pair to our matrix such that matrix[curr][child] = 1;
+// and we need to do this for all nodes such that for each node Time-> O(V*E) Space O(V^2)
+
+
+class Solution {
+public:
+    vector<bool> checkIfPrerequisite(int numCourses, vector<vector<int>>& prerequisites, vector<vector<int>>& queries) {
+        
+        // we can think of all pair shortest path
+        //  all element exact digonal is inf then add all u->v dist 1
+        // using flyod warshall algo
+        vector<vector<int>> isReachable(numCourses , vector<int>(numCourses , 1e9));
+        for(int i = 0; i < numCourses ; i++)isReachable[i][i] = 0;
+        for(auto i : prerequisites){
+            int u = i[0] , v = i[1];
+            isReachable[u][v] = 1;
+        }
+        //via path k
+        for(int k = 0 ; k < numCourses ; k++ ){
+            for(int i = 0 ; i < numCourses ; i++ ){
+                for(int j = 0; j < numCourses;j++){
+                    if(isReachable[i][j] > isReachable[i][k] + isReachable[k][j] and isReachable[k][j] != 1e9 and isReachable[i][k] != -1e9 ){
+                        isReachable[i][j] = isReachable[i][k]+ isReachable[k][j];
+                    }
+                }
+            }
+        }
+        vector<bool> ans(queries.size());
+        int k = 0;
+        for(auto i : queries){
+            int u = i[0] , v = i[1];
+            if(isReachable[u][v] != 1e9){
+                ans[k] = true;
+            }else{
+                ans[k] = false;
+            }
+            k++;
+        }
+        return ans;
+    }
+};
+
+
+
+```
+</details>
+
+<br> 
+
+
+
+## [1311. Get Watched Videos by Your Friends](https://leetcode.com/problems/get-watched-videos-by-your-friends/) 
+
+> - There are n people, each person has a unique id between 0 and n-1. Given the arrays watchedVideos and friends, where watchedVideos[i] and friends[i] contain the list of watched videos and the list of friends respectively for the person with id = i.
+> - Level 1 of videos are all watched videos by your friends, level 2 of videos are all watched videos by the friends of your friends and so on. In general, the level k of videos are all watched videos by people with the shortest path exactly equal to k with you. Given your id and the level of videos, return the list of videos ordered by their frequencies (increasing). For videos with the same frequency order them alphabetically from least to greatest. 
+
+<code >Logic</code>
+
+```quote
+
+Note :in BFs always mark visit child when pushing into queye not when taking out from queue
+This will not give tle but it will add child many times and time complexity will be increase and may give TLE
+i have stress test on one of testcase where 
+in first i am getting only 13 nodes at level x with marking visit at pushing into queue
+second i am getting 1352 nodes at level x with marking when popping out from queue (duplication of nodes if we reomove duplication)
+then we will get the same 13 nodes
+
+Logic is simple Do BFS with level
+
+
+
+```
+[Code Link](./CodeGraph/04-get-videos-watched-by-friends.cpp)
+
+<details><summary>Code</summary>
+
+```cpp
+
+// Note :in BFs always mark visit child when pushing into queye not when taking out from queue
+// This will not give tle but it will add child many times and time complexity will be increase and may give TLE
+// i have stress test on one of testcase where 
+// in first i am getting only 13 nodes at level x with marking visit at pushing into queue
+// second i am getting 1352 nodes at level x with marking when popping out from queue (duplication of nodes if we reomove duplication)
+// then we will get the same 13 nodes
+
+
+
+class Solution {
+public:
+    vector<string> watchedVideosByFriends(vector<vector<string>>& watchedVideos, vector<vector<int>>& adj, int id, int level) {
+        int d = 0;
+        int n = adj.size();
+        queue<int> q;
+        q.push(id);
+        vector<int> vis(n , 0 ) ;
+        vector<string> ans ;
+        map<string , int>freq; 
+        map<int , vector<string>> mp;
+        while(q.size()>0){
+            int sz = q.size();
+            for(int i = 0;i < sz ;i++){
+                int curr = q.front();
+                q.pop();
+                vis[curr] = 1;
+                // find given level update frequency of videos of given friend 
+                if(d == level)for(auto j : watchedVideos[curr])freq[j]++;
+                
+                for(int child : adj[curr]){
+                    if(!vis[child]){
+                        vis[child] = 1;
+                        q.push(child);
+                    }
+                }
+            }
+            if(d == level)break;
+            d++;
+        }
+        for(auto [st , f] : freq)mp[f].push_back(st);
+        for(auto [f , v] : mp){
+            for(auto i : v)ans.push_back(i);
+        }
+        return ans;
+
+        
+    }
+};
+            
+
+        
+
+
+
+            
+            
+
+        
+
+```
+</details>
+
+<br> 
+
+<!-- 
+
+# Day 5
 
 ## []() 
 
@@ -508,5 +804,5 @@ Code
 ```
 </details>
 
-<br> 
- -->
+<br>  -->
+
