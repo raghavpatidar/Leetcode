@@ -34,6 +34,9 @@
   - [1130. Minimum Cost Tree From Leaf Values](#1130-minimum-cost-tree-from-leaf-values)
   - [1049. Last Stone Weight II](#1049-last-stone-weight-ii)
   - [1218. Longest Arithmetic Subsequence of Given Difference](#1218-longest-arithmetic-subsequence-of-given-difference)
+- [Day 11](#day-11)
+  - [85. Maximal Rectangle](#85-maximal-rectangle)
+  - [152. Maximum Product Subarray](#152-maximum-product-subarray)
 
 
 
@@ -1462,10 +1465,199 @@ public:
 </details>
 
 <br> 
+<br> 
+
+
+
+# Day 11
+## [85. Maximal Rectangle](https://leetcode.com/problems/maximal-rectangle/description/) 
+
+> Given a rows x cols binary matrix filled with 0's and 1's, find the largest rectangle containing only 1's and return its area.
+
+<code >Logic</code>
+
+```quote
+
+1. Think of finding maximum area of hostogram
+2. for each row we can take if 1 from bottom to up as histogram our 1*(no of 1)
+3. now how question become very simple to find max from all n histrogram array
+```
+
+[Code Link](./11-maximal-rectangle.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+class Solution {
+public:
+    vector<int> nsl(vector<int>v){
+        stack<int>st;
+        vector<int> ans;
+        for(int i = 0; i < v.size() ; i++){
+            if(st.size()>0){
+                while(st.size()>0 and v[st.top()] >= v[i])st.pop();
+                if(st.size() == 0)ans.push_back(-1);
+                else ans.push_back(st.top());
+            }else{
+                ans.push_back(-1);
+            }
+            st.push(i);
+        }
+        return ans;
+    }
+    vector<int> nsr(vector<int>v){
+        stack<int>st;
+        vector<int> ans;
+        int n = v.size();
+        for(int i = v.size()-1; i >= 0 ; i--){
+            if(st.size()>0){
+                while(st.size()>0 and v[st.top()] >= v[i])st.pop();
+                if(st.size() == 0)ans.push_back(n);
+                else ans.push_back(st.top());
+            }else{
+                ans.push_back(n);
+            }
+            st.push(i);
+        }
+        reverse(ans.begin() , ans.end());
+        return ans;
+    }
+
+    int maxHistogram(vector<int> v){
+        vector<int>left = nsl(v);
+        vector<int>right = nsr(v);
+        int ans = 0;
+        for(int i = 0; i < v.size() ; i++){
+            int w = (right[i] - left[i] - 1 );
+            int h =v[i];
+            int area = (h*w);
+            ans = max(ans , area);
+        }
+        return ans;
+    }
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        int n = matrix.size();
+        int m = matrix[0].size();
+        vector<int> prev(m , 0 ) ;
+        for(int j = 0; j < m ; j++)prev[j] = matrix[0][j] - '0';
+        int ans = maxHistogram(prev);
+        for(int i = 1; i < n ; i++){
+            for(int j = 0; j < m ;j++){
+                if(matrix[i][j] == '0' )prev[j] = 0;
+                else prev[j] = prev[j] +1;
+            }
+            ans = max(ans ,maxHistogram(prev));
+            // prev = curr;
+        }
+        return ans;
+        
+    }
+};
+```
+</details>
+
+<br> 
+
+
+
+
+
+## [152. Maximum Product Subarray](./11-product-subarray.cpp) 
+
+> Given an integer array nums, find a 
+subarray that has the largest product, and return the product.
+The test cases are generated so that the answer will fit in a 32-bit integer.
+
+ 
+
+<code >Logic</code>
+
+```quote
+
+1. Using Dynamic programming approach:
+     1. If we will pick an number we can add it's product
+     2. if not we will start fresh from current number as base
+     3. need two state prevProduct and idx
+     4. Base condtion is simple if idx == 0 return prevProdcut;
+     5. Recurssion memeoization
+
+2. Using Obersivation :
+    a) -> all are posivive 
+    b) -> positive and even negative
+    c) -> postive and odd negative [1 , 2 ,-1 ,3 , 4]
+          We can think that we need max pre before -1 or max suffix after -1
+    d) -> if there is zero we can start fresh from there
+                                    
+```
+[Code Link](./11-product-subarray.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    int solve(int idx,int prev , vector<int>&nums , map<pair<int,int>,int>&dp){
+         if(idx == 0)return prev;
+
+         if(dp.count({idx , prev}))return dp[{idx , prev}];
+
+         if(prev == -1e9){
+                int pick =   solve(idx -1 , nums[idx -1], nums ,  dp);
+                int notPick = solve(idx -1 , nums[idx-1] , nums , dp);
+                   return  dp[{idx , prev}] = max({pick, notPick, prev});
+         }
+
+         int pick =   solve(idx -1 , prev * nums[idx -1 ], nums ,  dp);
+         int notPick = solve(idx -1 , nums[idx-1] , nums , dp);
+
+         return  dp[{idx , prev}] = max({pick, notPick, prev});
+
+    }
+    int solvingUsingPrefixSuffixApproach(vector<int>&nums , int n){
+        int pre = 1 , suff = 1;
+        int maxi = -1e9;
+        bool isZero = false;
+        for(int i = 0; i < n ; i++){
+            if(nums[i] == 0 ){
+                pre = 1;
+                isZero = true;
+                continue;
+            }
+            pre = pre * nums[i];
+            maxi = max(pre , maxi);
+        }
+        for(int i = n-1; i >= 0 ; i--){
+            if(nums[i] == 0 ){
+                suff = 1;
+                isZero = true;
+                continue;
+            }
+            suff = suff * nums[i];
+            maxi = max(suff , maxi);
+        }
+
+        if(isZero)maxi = max(maxi , 0);
+        return maxi;
+    }
+    int maxProduct(vector<int>& nums) {
+        int n  = nums.size();
+        // map<pair<int,int>,int>dp;
+        // int dpSolutionAns =  solve(n , -1e9 , nums , dp);
+        int preSuffAns = solvingUsingPrefixSuffixApproach(nums , n);
+        return  preSuffAns;
+    }
+};
+
+```
+</details>
+
+<br> 
+
 
 <!-- 
 
-# Day 11
+# Day 12
 ## []() 
 
 > Statement
@@ -1485,5 +1677,5 @@ Code
 </details>
 
 <br> 
- -->
 
+ -->
