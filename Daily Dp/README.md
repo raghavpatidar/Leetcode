@@ -37,6 +37,9 @@
 - [Day 11](#day-11)
   - [85. Maximal Rectangle](#85-maximal-rectangle)
   - [152. Maximum Product Subarray](#152-maximum-product-subarray)
+- [Day 12](#day-12)
+  - [960. Delete Columns to Make Sorted III](#960-delete-columns-to-make-sorted-iii)
+  - [1691. Maximum Height by Stacking Cuboids](#1691-maximum-height-by-stacking-cuboids)
 
 
 
@@ -1655,9 +1658,121 @@ public:
 <br> 
 
 
+# Day 12
+## [960. Delete Columns to Make Sorted III](https://leetcode.com/problems/delete-columns-to-make-sorted-iii/) 
+
+> You are given an array of n strings strs, all of the same length.
+We may choose any deletion indices, and we delete all the characters in those indices for each string.
+For example, if we have strs = ["abcdef","uvwxyz"] and deletion indices {0, 2, 3}, then the final array after deletions is ["bef", "vyz"].
+Suppose we chose a set of deletion indices answer such that after deletions, the final array has every string (row) in lexicographic order. (i.e., (strs[0][0] <= strs[0][1] <= ... <= strs[0][strs[0].length - 1]), and (strs[1][0] <= strs[1][1] <= ... <= strs[1][strs[1].length - 1]), and so on). Return the minimum possible value of answer.length.
+
+<code >Logic</code>
+
+```quote
+
+1. Similar to Lis
+2. while checking prev we check all value in all row for prev 
+
+```
+[Code Link](./12-Delete-Columns-to-Make-Sorted-III.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+class Solution {
+public: 
+    int solve(int idx , int prev,int n ,vector<string>& strs ,  vector<vector<int>>& dp ){
+        //base
+        if(idx == n)return 0;
+        //memo
+        if(dp[idx][prev+1] != -1)return dp[idx][prev+1];
+
+        int del = 1e9 , noDel =1e9;
+        bool allIncreasing = true;
+        if(prev != -1){
+            for(int i = 0; i < strs.size() ; i++){
+                if(strs[i][prev] > strs[i][idx])allIncreasing =   false;
+            }
+        }
+        if(allIncreasing){
+            del = 1 + solve(idx +1 , prev , n , strs ,dp);
+            noDel = solve(idx +1 , idx , n , strs,dp);
+        }else del =1 + solve(idx +1 , prev , n , strs, dp);
+        
+        return dp[idx][prev+1] =  min(del , noDel);
+    }
+    int minDeletionSize(vector<string>& strs) {
+        int len = strs[0].size();
+        vector<vector<int>> dp(len+1 , vector<int>(len + 1 , -1));
+        return solve(0 , -1 , strs[0].size()  , strs ,dp);
+    }
+};
+
+```
+</details>
+
+<br> 
+
+
+## [1691. Maximum Height by Stacking Cuboids](https://leetcode.com/problems/maximum-height-by-stacking-cuboids/) 
+
+> Given n cuboids where the dimensions of the ith cuboid is cuboids[i] = [widthi, lengthi, heighti] (0-indexed). Choose a subset of cuboids and place them on each other.
+You can place cuboid i on cuboid j if widthi <= widthj and lengthi <= lengthj and heighti <= heightj. You can rearrange any cuboid's dimensions by rotating it to put it on another cuboid.
+Return the maximum height of the stacked cuboids.
+
+<code >Logic</code>
+
+```quote
+
+1. is any dimesion side is smaller than prev we can use that
+2. using abve logic we can think that if we can sort all edges then prev edges must be all
+3. Greater than current dimensions
+4. after sorting each row seperately then each rows such start sort(arr[i]) then sort(arr)
+5. it just become simple lis patter
+
+```
+[Code Link](./12-maximum-heighty-by-stacking-cuboids.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    
+    int solve(int idx , int prev,int n , vector<vector<int>>&cuboids, vector<vector<int>> &dp ){
+        if(idx == n )return 0;
+
+        //memo
+        if(dp[idx][prev+1] != -1)return dp[idx][prev+1];
+
+        int pick = 0 , notPick = 0;
+        if(prev == -1 || (cuboids[idx][0] >= cuboids[prev][0] && cuboids[idx][1] >= cuboids[prev][1] && cuboids[idx][2] >= cuboids[prev][2]) ){
+            pick = cuboids[idx][2] + solve(idx +1 , idx,n , cuboids , dp);
+        }
+        notPick = solve(idx+1 , prev,n,  cuboids , dp);
+
+        return dp[idx][prev+1 ] = max(pick , notPick);
+
+    }
+
+    int maxHeight(vector<vector<int>>& cuboids) {
+         for(auto &i : cuboids)sort(i.begin() , i.end());
+         int n = cuboids.size();
+         vector<vector<int>> dp( n+1 , vector<int>(n+1 , -1));
+         sort(cuboids.begin() , cuboids.end());
+         return solve(0 , -1 , n , cuboids , dp);
+    }
+};
+
+```
+</details>
+
+<br> 
+
 <!-- 
 
-# Day 12
+# Day 13
 ## []() 
 
 > Statement
@@ -1677,5 +1792,5 @@ Code
 </details>
 
 <br> 
-
  -->
+
