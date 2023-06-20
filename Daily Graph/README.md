@@ -17,6 +17,10 @@
   - [1584. Min Cost to Connect All Points](#1584-min-cost-to-connect-all-points)
   - [1462. Course Schedule IV](#1462-course-schedule-iv)
   - [1311. Get Watched Videos by Your Friends](#1311-get-watched-videos-by-your-friends)
+- [Day 5](#day-5)
+  - [1615. Maximal Network Rank](#1615-maximal-network-rank)
+  - [1786. Number of Restricted Paths From First to Last Node](#1786-number-of-restricted-paths-from-first-to-last-node)
+  - [2039. The Time When the Network Becomes Idle](#2039-the-time-when-the-network-becomes-idle)
 
 
 
@@ -772,6 +776,250 @@ public:
             
 
         
+
+```
+</details>
+
+<br> 
+<br> 
+
+
+
+# Day 5
+
+## [1615. Maximal Network Rank](https://leetcode.com/problems/maximal-network-rank/) 
+
+> There is an infrastructure of n cities with some number of roads connecting these cities. Each roads[i] = [ai, bi] indicates that there is a bidirectional road between cities ai and bi.
+The network rank of two different cities is defined as the total number of directly connected roads to either city. If a road is directly connected to both cities, it is only counted once.
+The maximal network rank of the infrastructure is the maximum network rank of all pairs of different cities.
+Given the integer n and the array roads, return the maximal network rank of the entire infrastructure.
+
+<code >Logic</code>
+
+```quote
+
+1. count in degree of each node
+2. if nodes have edge between them then add indegree and revomve common edge because it is added twice
+3. if not connected then just add both node indegree
+
+```
+[Code Link](./CodeGraph/05-maximal-network-len.cpp)
+
+<details><summary>Code</summary>
+
+```cpp
+
+
+class Solution {
+public:
+    int maximalNetworkRank(int n, vector<vector<int>>& roads) {
+         vector<int> in(n , 0 );
+         map<pair<int, int> , int>mp;
+         for(auto i : roads){
+             in[i[0]]++ , in[i[1]]++;
+             mp[{i[0] , i[1]}] = 1;
+             mp[{i[1] , i[0]}] = 1;
+         }
+         int ans = 0;
+         for(int i = 0; i < n ; i++){
+             for(int j = i+1; j < n ; j++){
+                int ctr = in[i] + in[j];
+                 if(mp[{i ,j}] == 1)ctr--;
+                 ans = max(ans , ctr);
+             }
+         }
+        
+         return ans;
+    }
+};
+
+```
+</details>
+
+<br> 
+
+
+
+## [1786. Number of Restricted Paths From First to Last Node](https://leetcode.com/problems/number-of-restricted-paths-from-first-to-last-node/) 
+
+> Statement
+
+<code >Logic</code>
+
+```quote
+
+1. First find dist array using dikjstras
+2. use dp to calculate path initially path wicht reached to end is 1 
+3. if we visited node before then add it's child path to out dp[node]+= child only if we have condition dist[node] >= dist[child]
+
+
+```
+[Code Link](./CodeGraph/05-number-of-resctiveted-paths-from-first-to-last-node.cpp)
+
+<details><summary>Code</summary>
+
+```cpp
+
+class Solution {
+public:
+    vector<int> dikjstras(int n , vector<pair<int,int>> adj[]){
+        vector<int> dist(n+2 , INT_MAX);
+        priority_queue<pair<int,int> , vector<pair<int,int>> , greater<pair<int,int>>> pq;
+        pq.push({0 , n});
+        dist[n] = 0;
+        while(pq.size()>0){
+            auto [ d , curr] = pq.top();
+            pq.pop();
+            for(auto [ child , wt] : adj[curr]){
+                if( wt + d < dist[child]){
+                    dist[child] = wt + d;
+                    pq.push({dist[child] , child});
+                }
+            }
+        }
+        return dist;
+    }
+    void dfs(int node ,int  n , int mod , vector<pair<int,int>>adj[] , vector<int>&dist , vector<int>&dp , vector<int>&vis){
+        vis[node] = 1;
+        if(n == node)return;
+        dp[node] = 0;
+        for(auto [child, wt] : adj[node]){
+            if(vis[child] == 0 ){
+                if(dist[child] < dist[node]){
+                    dfs(child, n, mod , adj , dist , dp , vis );
+                    dp[node] = (dp[node]%mod +  dp[child]%mod)%mod;
+                }
+            }else{
+                if(dist[child] < dist[node]){
+                    dp[node] =(dp[node]%mod +  dp[child]%mod)%mod;
+                }
+            }
+        }
+        dp[node] = dp[node]%mod;
+    }
+    int countRestrictedPaths(int n, vector<vector<int>>& edges) {
+        vector<pair<int,int>> adj[n+1];
+        for(auto i :edges){
+            adj[i[0]].push_back({i[1] , i[2]});
+            adj[i[1]].push_back({i[0] , i[2]});
+        }
+        vector<int> vis(n+1 , 0),  dp(n+1 , 0 ), dist = dikjstras(n , adj);
+        dp[n] = 1;
+        int mod = 1e9+7;
+        dfs(1, n ,mod, adj , dist , dp , vis);
+        return dp[1];
+    }
+
+};
+
+```
+</details>
+
+<br> 
+
+
+
+## [2039. The Time When the Network Becomes Idle](https://leetcode.com/problems/the-time-when-the-network-becomes-idle/) 
+
+> There is a network of n servers, labeled from 0 to n - 1. You are given a 2D integer array edges, where edges[i] = [ui, vi] indicates there is a message channel between servers ui and vi, and they can pass any number of messages to each other directly in one second. You are also given a 0-indexed integer array patience of length n.
+All servers are connected, i.e., a message can be passed from one server to any other server(s) directly or indirectly through the message channels.
+The server labeled 0 is the master server. The rest are data servers. Each data server needs to send its message to the master server for processing and wait for a reply. Messages move between servers optimally, so every message takes the least amount of time to arrive at the master server. The master server will process all newly arrived messages instantly and send a reply to the originating server via the reversed path the message had gone through.
+At the beginning of second 0, each data server sends its message to be processed. Starting from second 1, at the beginning of every second, each data server will check if it has received a reply to the message it sent (including any newly arrived replies) from the master server:
+If it has not, it will resend the message periodically. The data server i will resend the message every patience[i] second(s), i.e., the data server i will resend the message if patience[i] second(s) have elapsed since the last time the message was sent from this server.
+Otherwise, no more resending will occur from this server.
+The network becomes idle when there are no messages passing between servers or arriving at servers.
+Return the earliest second starting from which the network becomes idle.
+
+<code >Logic</code>
+
+```quote
+
+1. find single source shorted path from 0 to all
+2. find dist[]
+3. we know total return time for one data is 2*d
+4 case 1
+2*d<=p
+
+iss case m ye dusra message jaane ke pahle hi server idle ho jayega so iss case ka timing simple 2*d ho jayega ( jo 1st packet ke liye time lagega)
+
+case 2
+
+2*d>p
+
+aab yaha bhi 2 case bante hai
+
+ek to ye ho skta h jb humara pehla message dobara node pr pohache tb ye release krna chah raha ho kintu ye kr nh payega bcz humara reply aa gaya h iss samay (in simple 2*d is divisible by p)
+
+Dusra ye ki jb humara pehla message ka reply aaye tb ye send krne ke state m na ho (in simple 2*d is not divisible by p)
+
+First case :
+
+pahle case ke liye total time = time taken for first message + time taken for last message
+total time = 2d + (2d-p) (ye message tb nikla hoga jb first message current node se p distance durr hoga so jb first message pohacha hoga to ye last message source se p aage badh chuka hoga)
+Hence,
+total time = 4*d-p
+
+second case:
+
+Iss case ke liye total time = time taken for first message + time taken for last message
+total time = 2d + (2d-2d%p) (ye message tb nikla hoga jb first message current node se 2d%p distance durr hoga so jb first message pohacha hoga to ye source se 2d%p aage badh chuka hoga)
+Hence,
+total time = 4d-2*d%p
+
+Iske baad humne sare case ko dekh liya h aab hum coding start kr skte hai
+
+
+
+```
+[Code Link](./CodeGraph/05-when-the-network-become-idle.cpp)
+
+<details><summary>Code</summary>
+
+```cpp
+
+class Solution {
+public:
+    int networkBecomesIdle(vector<vector<int>>& edges, vector<int>& patience) {
+        int n = patience.size();
+        vector<int> dist(n) , adj[n] , vis(n,0);
+        for(auto i :edges){
+            adj[i[0]].push_back(i[1]);
+            adj[i[1]].push_back(i[0]);
+        }
+        queue<int> q;
+        q.push(0);
+        dist[0] = 0;
+        vis[0] = 1;
+        while(q.size()>0){
+            int curr = q.front();
+            q.pop();
+            for(auto i : adj[curr]){
+                if(vis[i] == 0 ){
+                    vis[i] = 1;
+                    dist[i] = 1 + dist[curr];
+                    q.push(i);
+                }
+            }
+        }
+        int ans = 0;
+        for(int i = 0; i < n ; i++){
+             int d = dist[i];
+             int temp = 2*d;
+             //case when out period is smaller than total distance
+             if(2*d > patience[i])
+			 {
+                 // is last msg is sending condition but we revive
+                if((2*d)%patience[i]==0)
+                    temp=4*d-patience[i];
+                else
+                // we already send last msg
+                    temp=4*d-(2*d)%patience[i];   
+            }
+            ans = max(ans,temp);
+        }
+        return ans+1;
+    }
+};
 
 ```
 </details>
