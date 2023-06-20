@@ -42,6 +42,9 @@
 - [Day 12](#day-12-1)
   - [1211. Queries Quality and Percentage](#1211-queries-quality-and-percentage)
   - [1251. Average Selling Price](#1251-average-selling-price)
+- [Day 13](#day-13)
+  - [570. Managers with at Least 5 Direct Reports](#570-managers-with-at-least-5-direct-reports)
+  - [178. Rank Scores](#178-rank-scores)
 
 
 # Day 1
@@ -1450,9 +1453,114 @@ GROUP BY p.product_id
 
 
 
-<!-- 
+
 
 # Day 13
+
+## [570. Managers with at Least 5 Direct Reports](https://leetcode.com/problems/managers-with-at-least-5-direct-reports/)
+
+> Write an SQL query to report the managers with at least five direct reports.
+Return the result table in any order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Employee
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| name        | varchar |
+| department  | varchar |
+| managerId   | int     |
++-------------+---------+
+id is the primary key column for this table.
+Each row of this table indicates the name of an employee, their department, and the id of their manager.
+If managerId is null, then the employee does not have a manager.
+No employee will be the manager of themself.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+
+SELECT e1.name
+FROM employee e1
+INNER JOIN employee e2
+ON e1.id = e2.managerId
+GROUP BY e1.name
+HAVING count(e2.id)>=5;
+
+
+```
+</br>
+</br>
+ 
+
+
+## [178. Rank Scores](https://leetcode.com/problems/rank-scores/)
+
+> Write an SQL query to rank the scores. The ranking should be calculated according to the following rules:
+The scores should be ranked from the highest to the lowest.
+If there is a tie between two scores, both should have the same ranking.
+After a tie, the next ranking number should be the next consecutive integer value. In other words, there should be no holes between ranks.
+Return the result table ordered by score in descending order.
+The query result format is in the following example.
+
+  
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Scores
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| score       | decimal |
++-------------+---------+
+id is the primary key for this table.
+Each row of this table contains the score of a game. Score is a floating point value with two decimal places.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+-- using count 
+SELECT
+  score,
+  (SELECT COUNT(DISTINCT score)
+   FROM scores s2
+   WHERE s1.score <= s2.score) AS 'rank'
+FROM scores s1
+ORDER BY score DESC;
+
+
+
+-- using dense rank
+SELECT score, DENSE_RANK() OVER (ORDER BY score DESC) AS 'rank'
+FROM Scores
+
+```
+</br>
+</br>
+ 
+<!-- 
+
+# Day 14
 
 ## [Question]()
 
@@ -1477,5 +1585,4 @@ query
 ```
 </br>
 </br>
- 
- -->
+  -->
