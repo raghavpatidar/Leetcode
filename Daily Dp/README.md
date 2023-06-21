@@ -31,6 +31,7 @@
 - [Day 9](#day-9)
   - [978. Longest Turbulent Subarray](#978-longest-turbulent-subarray)
   - [1039. Minimum Score Triangulation of Polygon](#1039-minimum-score-triangulation-of-polygon)
+- [Day 10](#day-10)
   - [1130. Minimum Cost Tree From Leaf Values](#1130-minimum-cost-tree-from-leaf-values)
   - [1049. Last Stone Weight II](#1049-last-stone-weight-ii)
   - [1218. Longest Arithmetic Subsequence of Given Difference](#1218-longest-arithmetic-subsequence-of-given-difference)
@@ -40,6 +41,8 @@
 - [Day 12](#day-12)
   - [960. Delete Columns to Make Sorted III](#960-delete-columns-to-make-sorted-iii)
   - [1691. Maximum Height by Stacking Cuboids](#1691-maximum-height-by-stacking-cuboids)
+- [Day 13](#day-13)
+  - [764. Largest Plus Sign](#764-largest-plus-sign)
 
 
 
@@ -1259,12 +1262,11 @@ public:
 
 <br> 
 
- 
+ # Day 10
 
 ## [1130. Minimum Cost Tree From Leaf Values](https://leetcode.com/problems/minimum-cost-tree-from-leaf-values/) 
 
 > - Given an array arr of positive integers, consider all binary trees such that:
-
 > - Each node has either 0 or 2 children;
 > - The values of arr correspond to the values of each leaf in an in-order traversal of the tree.
 > - The value of each non-leaf node is equal to the product of the largest leaf value in its left and right subtree, respectively.
@@ -1770,6 +1772,74 @@ public:
 
 <br> 
 
+
+
+# Day 13
+## [764. Largest Plus Sign](https://leetcode.com/problems/largest-plus-sign/description/) 
+
+> You are given an integer n. You have an n x n binary grid grid with all values initially 1's except for some indices given in the array mines. The ith element of the array mines is defined as mines[i] = [xi, yi] where grid[xi][yi] == 0.
+
+Return the order of the largest axis-aligned plus sign of 1's contained in grid. If there is none, return 0.
+
+An axis-aligned plus sign of 1's of order k has some center grid[r][c] == 1 along with four arms of length k - 1 going up, down, left, and right, and made of 1's. Note that there could be 0's or 1's beyond the arms of the plus sign, only the relevant area of the plus sign is checked for 1's.
+
+ 
+
+<code >Logic</code>
+
+```quote
+
+1. Simple Calculate  consecutive count of  1 in left , up ,down , bottom
+2. for each index max(ans , min(left, right , up , bottom));
+
+```
+[Code Link](./13-Largest-Plus-sign.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+struct Node{
+    int up , down , left , right , curr;
+    Node(){
+        up = down = left = right = curr = 0;
+    }
+};
+
+class Solution {
+public:
+    int orderOfLargestPlusSign(int n, vector<vector<int>>& mines) {
+        vector<vector<int>> mat(n, vector<int>(n, 1));
+        for(auto i : mines)mat[i[0]][i[1]] = 0;
+        vector<vector<int>> lef, rig, top, bot;
+        lef = rig = top = bot = mat;
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                int x = n - i - 1;
+                int y = n - j - 1;
+                if( (i>0)   && top[i][j] ) top[i][j] += top[i-1][j];
+                if( (j>0)   && lef[i][j] ) lef[i][j] += lef[i][j-1];
+                if( (x<n-1) && bot[x][y] ) bot[x][y] += bot[x+1][y];
+                if( (y<n-1) && rig[x][y] ) rig[x][y] += rig[x][y+1];
+            }
+        }
+
+        int ans = 0;
+        for(int i=0;i<n;i++)
+            for(int j=0;j<n;j++)
+                ans = max(ans, min({lef[i][j], rig[i][j], top[i][j], bot[i][j]}));
+
+        return ans;
+    }
+};
+
+```
+</details>
+
+<br> 
+
 <!-- 
 
 # Day 13
@@ -1791,6 +1861,6 @@ Code
 ```
 </details>
 
-<br> 
- -->
+<br>  -->
+
 
