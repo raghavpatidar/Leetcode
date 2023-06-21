@@ -45,6 +45,9 @@
 - [Day 13](#day-13)
   - [570. Managers with at Least 5 Direct Reports](#570-managers-with-at-least-5-direct-reports)
   - [178. Rank Scores](#178-rank-scores)
+- [Day 14](#day-14)
+  - [608. Tree Node](#608-tree-node)
+  - [585. Investments in 2016](#585-investments-in-2016)
 
 
 # Day 1
@@ -1558,9 +1561,114 @@ FROM Scores
 </br>
 </br>
  
-<!-- 
+
 
 # Day 14
+
+## [608. Tree Node](https://leetcode.com/problems/tree-node/description/)
+
+>  Each node in the tree can be one of three types:
+> 
+> - "Leaf": if the node is a leaf node.
+> - "Root": if the node is the root of the tree.
+> - "Inner": If the node is neither a leaf node nor a root node.
+> Write an SQL query to report the type of each node in the tree.
+> Return the result table in any order.
+> The query result format is in the following example. 
+> 
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| p_id        | int  |
++-------------+------+
+id is the primary key column for this table.
+Each row of this table contains information about the id of a node and the id of its parent node in a tree.
+The given structure is always a valid tree.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+
+SELECT id, 
+(
+  CASE WHEN p_id IS NULL THEN 'Root' 
+  WHEN  id NOT in(select  p_id from Tree where p_id is not NULL) THEN "Leaf"
+  ELSE "Inner" END 
+) As type
+FROM Tree
+
+```
+</br>
+
+## [585. Investments in 2016](https://leetcode.com/problems/investments-in-2016/description/)
+
+> Write an SQL query to report the sum of all total investment values in 2016 tiv_2016, for all policyholders who:
+> - have the same tiv_2015 value as one or more other policyholders, and
+> - are not located in the same city like any other policyholder (i.e., the (lat, lon) attribute pairs must be unique).
+Round tiv_2016 to two decimal places.
+> The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Insurance
+
++-------------+-------+
+| Column Name | Type  |
++-------------+-------+
+| pid         | int   |
+| tiv_2015    | float |
+| tiv_2016    | float |
+| lat         | float |
+| lon         | float |
++-------------+-------+
+pid is the primary key column for this table.
+Each row of this table contains information about one policy where:
+pid is the policyholders policy ID.
+tiv_2015 is the total investment value in 2015 and tiv_2016 is the total investment value in 2016.
+lat is the latitude of the policy holder's city. It's guaranteed that lat is not NULL.
+lon is the longitude of the policy holder's city. It's guaranteed that lon is not NULL.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+
+SELECT ROUND(SUM(tiv_2016),2) as tiv_2016
+FROM insurance i1
+WHERE tiv_2015 IN (
+            SELECT tiv_2015 
+            FROM insurance i2
+            WHERE i1.pid != i2.pid)
+AND (lat, lon) NOT IN (
+            SELECT lat, lon 
+            FROM insurance i3 
+            WHERE i3.pid != i1.pid)
+
+
+
+```
+</br>
+</br>
+ 
+<!-- 
+
+# Day 15
 
 ## [Question]()
 
