@@ -43,6 +43,9 @@
   - [1691. Maximum Height by Stacking Cuboids](#1691-maximum-height-by-stacking-cuboids)
 - [Day 13](#day-13)
   - [764. Largest Plus Sign](#764-largest-plus-sign)
+- [Day 14](#day-14)
+  - [1186. Maximum Subarray Sum with One Deletion](#1186-maximum-subarray-sum-with-one-deletion)
+  - [1458. Max Dot Product of Two Subsequences](#1458-max-dot-product-of-two-subsequences)
 
 
 
@@ -1840,9 +1843,110 @@ public:
 
 <br> 
 
-<!-- 
 
-# Day 13
+
+# Day 14
+## [1186. Maximum Subarray Sum with One Deletion](https://leetcode.com/problems/maximum-subarray-sum-with-one-deletion/) 
+
+> Given an array of integers, return the maximum sum for a non-empty subarray (contiguous elements) with at most one element deletion. In other words, you want to choose a subarray and optionally delete one element from it so that there is still at least one element left and the sum of the remaining elements is maximum possible.
+Note that the subarray needs to be non-empty after deleting one element.
+
+<code >Logic</code>
+
+```quote
+
+1.just make tree table and dry run 
+    prevwith delete
+    prevwith no delete
+    max till now
+
+```
+[Code Link](./14-maximum-subarray-sum-with-one-deletion.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    int maximumSum(vector<int>& arr) {
+       int maxi = arr[0];
+       int prevDelete = 0;
+       int prevNoDelete = arr[0];
+       int ans = arr[0];
+       for(int i = 1; i < arr.size(); i++){
+           // if prev is deleted then we have two option take max of not delete or  add current value to prev delete 
+           prevDelete = max(prevNoDelete , prevDelete + arr[i]);
+           // if prev is not delete then we can take prev no delete otherwise take cureent because current is max
+           prevNoDelete = max(prevNoDelete + arr[i] , arr[i] );
+           ans = max({ ans , prevDelete , prevNoDelete});
+       }
+       return ans;
+    }
+};
+
+```
+</details>
+
+<br> 
+
+
+## [1458. Max Dot Product of Two Subsequences](https://leetcode.com/problems/max-dot-product-of-two-subsequences/) 
+
+> Given two arrays nums1 and nums2.
+Return the maximum dot product between non-empty subsequences of nums1 and nums2 with the same length.
+A subsequence of a array is a new array which is formed from the original array by deleting some (can be none) of the characters without disturbing the relative positions of the remaining characters. (ie, [2,3,5] is a subsequence of [1,2,3,4,5] while [1,5,3] is not).
+
+<code >Logic</code>
+
+```quote
+
+1. do simple pick no pick dp 
+2. if we pick we can add product nums1[i]*nums[j] and solve for i-1,j-1;
+3. if we don't pick we can move forward with i or j such that i-1 or j-1 
+4. as we are returnning zero and there woud be a case were first array element is all negative and second array is all posivive or vise versa
+5. we can check this condition seperately
+
+```
+[Code Link](./14-max-dot-product-of-two-squeuence.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    int solve(int i , int j , vector<int>&nums1 , vector<int>&nums2 , vector<vector<int>>&dp){
+        if(i < 0 || j < 0 ) return 0;
+        if(dp[i][j] != -1)return dp[i][j];
+        int use = nums1[i]*nums2[j] + solve(i-1 , j-1 , nums1 , nums2 , dp);
+        int noUsei = solve(i-1 , j , nums1, nums2 , dp);
+        int noUsej = solve(i , j-1 , nums1 , nums2 , dp);
+        return dp[i][j] =  max({use , noUsei , noUsej});
+    }
+    int maxDotProduct(vector<int>& nums1, vector<int>& nums2) {
+        int n = nums1.size() , m = nums2.size();
+        vector<vector<int>> dp(n , vector<int> (m , -1));
+        int ans = solve(n-1 , m-1 , nums1 , nums2, dp);
+        int mini1 = *min_element(nums1.begin() , nums1.end());
+        int maxi1 = *max_element(nums1.begin() , nums1.end());
+        int mini2 = *min_element(nums2.begin() , nums2.end());
+        int maxi2 = *max_element(nums2.begin() , nums2.end());
+        if(ans != 0 )return ans;
+        return max( mini1*maxi2 , maxi1*mini2 );
+    }
+};
+
+```
+</details>
+
+<br> 
+
+
+
+
+<!-- 
+# Day 15
 ## []() 
 
 > Statement
@@ -1861,6 +1965,6 @@ Code
 ```
 </details>
 
-<br>  -->
+<br> 
 
-
+ -->
