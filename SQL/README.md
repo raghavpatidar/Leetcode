@@ -48,6 +48,9 @@
 - [Day 14](#day-14)
   - [608. Tree Node](#608-tree-node)
   - [585. Investments in 2016](#585-investments-in-2016)
+- [Day 15](#day-15)
+  - [550. Game Play Analysis IV](#550-game-play-analysis-iv)
+  - [602. Friend Requests II: Who Has the Most Friends](#602-friend-requests-ii-who-has-the-most-friends)
 
 
 # Day 1
@@ -1666,9 +1669,96 @@ AND (lat, lon) NOT IN (
 </br>
 </br>
  
-<!-- 
+
 
 # Day 15
+
+## [550. Game Play Analysis IV](https://leetcode.com/problems/game-play-analysis-iv/)
+
+> Write an SQL query to report the fraction of players that logged in again on the day after the day they first logged in, rounded to 2 decimal places. In other words, you need to count the number of players that logged in for at least two consecutive days starting from their first login date, then divide that number by the total number of players.
+The query result format is in the following example 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Activity
+
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| player_id    | int     |
+| device_id    | int     |
+| event_date   | date    |
+| games_played | int     |
++--------------+---------+
+(player_id, event_date) is the primary key of this table.
+This table shows the activity of players of some games.
+Each row is a record of a player who logged in and played a number of games (possibly 0) before logging out on someday using some device.
+
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+
+SELECT ROUND( count(distinct a.player_id)/( SELECT COUNT(DISTINCT player_id) AS cnt FROM activity ) , 2)as fraction
+FROM Activity a
+WHERE (player_id , DATE_SUB(event_date, INTERVAL 1 DAY))  IN (SELECT player_id, MIN(event_date) AS first_date FROM activity group by player_id ) 
+
+
+```
+</br>
+
+
+
+## [602. Friend Requests II: Who Has the Most Friends](https://leetcode.com/problems/friend-requests-ii-who-has-the-most-friends/)
+
+>  Write an SQL query to find the people who have the most friends and the most friends number.
+The test cases are generated so that only one person has the most friends.
+The query result format is in the following example.
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: RequestAccepted
+
++----------------+---------+
+| Column Name    | Type    |
++----------------+---------+
+| requester_id   | int     |
+| accepter_id    | int     |
+| accept_date    | date    |
++----------------+---------+
+(requester_id, accepter_id) is the primary key for this table.
+This table contains the ID of the user who sent the request, the ID of the user who received the request, and the date when the request was accepted.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+select temp.id as id ,  count(temp.id) as num 
+from (
+select requester_id as id  from RequestAccepted
+union all
+select accepter_id as id from RequestAccepted) temp
+Group by temp.id 
+order by num desc limit 1
+
+```
+</br>
+</br>
+ 
+<!-- # Day 15
 
 ## [Question]()
 
