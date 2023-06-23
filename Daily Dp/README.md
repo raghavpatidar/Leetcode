@@ -46,6 +46,9 @@
 - [Day 14](#day-14)
   - [1186. Maximum Subarray Sum with One Deletion](#1186-maximum-subarray-sum-with-one-deletion)
   - [1458. Max Dot Product of Two Subsequences](#1458-max-dot-product-of-two-subsequences)
+- [Day 15](#day-15)
+  - [139. Word Break](#139-word-break)
+  - [140. Word Break II](#140-word-break-ii)
 
 
 
@@ -1945,8 +1948,126 @@ public:
 
 
 
-<!-- 
+
 # Day 15
+## [139. Word Break](https://leetcode.com/problems/word-break/) 
+
+> Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
+Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+<code >Logic</code>
+
+```quote
+
+1. MCM pattern
+2. start with 0th idex 
+3. build all string to n and checkk in  map if found string with
+    previous index similar mark it at k and now call solve for k to n
+    so solve subproblem
+
+```
+[Code Link](./15-word-break.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    bool solve(int idx , map<string,int>&m , string&s , vector<int>&dp){
+        // cout<<idx<<" ";
+        if(idx == s.size() )return true;
+        if(idx >s.size())return false;
+
+
+        if(dp[idx] != -1)return dp[idx];
+
+        int use = false;
+        string k = "";
+        for(int i = idx ; i < s.size(); i++){
+            k.push_back(s[i]);
+            // cout<<k<<endl;
+            if(m.find(k) != m.end()){
+                use = use || solve( i+1 , m , s , dp);
+            }
+        }
+        // cout<<endl;
+        return dp[idx]  = use;
+    }
+    bool wordBreak(string s, vector<string>& wordDict) {
+        map<string,  int> m ; 
+        for(auto i : wordDict)m[i] = 1;
+        vector<int> dp(s.size() + 1,  -1);
+        return solve(0 , m , s , dp);
+    }
+};
+
+```
+</details>
+
+<br> 
+
+
+## [140. Word Break II](https://leetcode.com/problems/word-break-ii/) 
+
+> Given a string s and a dictionary of strings wordDict, add spaces in s to construct a sentence where each word is a valid dictionary word. Return all such possible sentences in any order.
+Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+<code >Logic</code>
+
+```quote
+
+1. simliar to wordbreak 1
+2. just add backtracking condition
+
+```
+[Code Link](./15-word-break-2.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    void solve(int idx , map<string,int> &m , string &s  , vector<string> &ans , string&curr  ){
+        if(idx == s.size() ){
+            curr.pop_back();
+            ans.push_back(curr);
+            return;
+        }
+        if(idx >s.size())return ;
+
+
+       
+        string k = "";
+        for(int i = idx ; i < s.size(); i++){
+            k.push_back(s[i]);
+            string temp = curr;
+            if(m.find(k) != m.end()){
+                temp.append(k);
+                temp.push_back(' ');
+                 solve( i+1 , m , s , ans , temp);
+            }
+        }
+    }
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        map<string,  int> m ; 
+        for(auto i : wordDict)m[i] = 1;
+        vector<string >ans;
+        string curr = ""; 
+        solve(0 , m , s , ans , curr);
+        return ans;
+    }
+};
+
+
+```
+</details>
+
+<br> 
+
+<!-- 
+# Day 16
 ## []() 
 
 > Statement
