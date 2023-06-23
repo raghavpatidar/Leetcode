@@ -39,18 +39,21 @@
 - [Day 12](#day-12)
   - [1148. Article Views I](#1148-article-views-i)
   - [1179. Reformat Department Table](#1179-reformat-department-table)
-- [Day 12](#day-12-1)
+- [Day 13](#day-13)
   - [1211. Queries Quality and Percentage](#1211-queries-quality-and-percentage)
   - [1251. Average Selling Price](#1251-average-selling-price)
-- [Day 13](#day-13)
+- [Day 14](#day-14)
   - [570. Managers with at Least 5 Direct Reports](#570-managers-with-at-least-5-direct-reports)
   - [178. Rank Scores](#178-rank-scores)
-- [Day 14](#day-14)
+- [Day 15](#day-15)
   - [608. Tree Node](#608-tree-node)
   - [585. Investments in 2016](#585-investments-in-2016)
-- [Day 15](#day-15)
+- [Day 16](#day-16)
   - [550. Game Play Analysis IV](#550-game-play-analysis-iv)
   - [602. Friend Requests II: Who Has the Most Friends](#602-friend-requests-ii-who-has-the-most-friends)
+- [Day 17](#day-17)
+  - [1280. Students and Examinations](#1280-students-and-examinations)
+  - [1327. List the Products Ordered in a Period](#1327-list-the-products-ordered-in-a-period)
 
 
 # Day 1
@@ -1343,7 +1346,7 @@ GROUP BY id;
 </br>
 </br>
  
-# Day 12
+# Day 13
 
 ## [1211. Queries Quality and Percentage](https://leetcode.com/problems/queries-quality-and-percentage/description/)
 
@@ -1461,7 +1464,8 @@ GROUP BY p.product_id
 
 
 
-# Day 13
+# Day 14
+
 
 ## [570. Managers with at Least 5 Direct Reports](https://leetcode.com/problems/managers-with-at-least-5-direct-reports/)
 
@@ -1566,7 +1570,7 @@ FROM Scores
  
 
 
-# Day 14
+# Day 15
 
 ## [608. Tree Node](https://leetcode.com/problems/tree-node/description/)
 
@@ -1671,7 +1675,7 @@ AND (lat, lon) NOT IN (
  
 
 
-# Day 15
+# Day 16
 
 ## [550. Game Play Analysis IV](https://leetcode.com/problems/game-play-analysis-iv/)
 
@@ -1758,7 +1762,183 @@ order by num desc limit 1
 </br>
 </br>
  
-<!-- # Day 15
+# Day 17
+
+## [1280. Students and Examinations](https://leetcode.com/problems/students-and-examinations/)
+
+> Write an SQL query to find the number of times each student attended each exam.
+Return the result table ordered by student_id and subject_name.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Students
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| student_id    | int     |
+| student_name  | varchar |
++---------------+---------+
+student_id is the primary key for this table.
+Each row of this table contains the ID and the name of one student in the school.
+ 
+
+Table: Subjects
+
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| subject_name | varchar |
++--------------+---------+
+subject_name is the primary key for this table.
+Each row of this table contains the name of one subject in the school.
+ 
+
+Table: Examinations
+
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| student_id   | int     |
+| subject_name | varchar |
++--------------+---------+
+There is no primary key for this table. It may contain duplicates.
+Each student from the Students table takes every course from the Subjects table.
+Each row of this table indicates that a student with ID student_id attended the exam of subject_name.
+ 
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+# -- using only joins
+
+SELECT
+  s.student_id ,
+  s.student_name ,
+  sub.subject_name ,
+  count(e.student_id) as attended_exams 
+FROM 
+  students s
+INNER JOIN 
+  subjects sub
+LEFT JOIN 
+  examinations e
+ON 
+  s.student_id = e.student_id
+    AND
+  sub.subject_name = e.subject_name
+GROUP BY
+  student_id , 
+  subject_name
+ORDER BY 
+  student_id , 
+  subject_name
+
+
+-- using cte
+with cte as (
+    select * 
+    FROM students st
+    INNER JOIN subjects subs
+    ORDER BY st.student_id , subs.subject_name
+)
+
+SELECT 
+  cte.student_id as student_id ,  
+  cte.student_name as student_name,
+  cte.subject_name as subject_name,
+  COUNT(e.student_id) as attended_exams 
+FROM cte
+LEFT JOIN 
+  examinations e 
+  ON e.student_id = cte.student_id AND e.subject_name = cte.subject_name
+GROUP BY
+  cte.student_id,
+  cte.subject_name
+order by 
+  student_id,
+  subject_name
+
+
+```
+</br>
+
+## [1327. List the Products Ordered in a Period](https://leetcode.com/problems/list-the-products-ordered-in-a-period/)
+
+> Write an SQL query to get the names of products that have at least 100 units ordered in February 2020 and their amount.
+Return result table in any order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Products
+
++------------------+---------+
+| Column Name      | Type    |
++------------------+---------+
+| product_id       | int     |
+| product_name     | varchar |
+| product_category | varchar |
++------------------+---------+
+product_id is the primary key for this table.
+This table contains data about the companys products.
+ 
+
+Table: Orders
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| product_id    | int     |
+| order_date    | date    |
+| unit          | int     |
++---------------+---------+
+There is no primary key for this table. It may have duplicate rows.
+product_id is a foreign key to the Products table.
+unit is the number of products ordered in order_date.
+ 
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+
+SELECT p.product_name , sum(o.unit) as unit
+FROM Products p
+LEFT JOIN Orders o
+ON p.product_id = o.product_id
+where order_date >= '2020-02-01' and order_date <= '2020-02-29'
+group by p.product_id
+having sum(o.unit) >= 100
+
+
+SELECT p.product_name , sum(o.unit) as unit
+FROM Products p
+LEFT JOIN Orders o
+ON p.product_id = o.product_id
+where MONTH(order_date) = 2 AND YEAR(order_date) = 2020
+group by p.product_id
+having sum(o.unit) >= 100
+
+```
+</br>
+</br>
+ 
+<!-- # Day 18
 
 ## [Question]()
 
