@@ -21,6 +21,9 @@
   - [1615. Maximal Network Rank](#1615-maximal-network-rank)
   - [1786. Number of Restricted Paths From First to Last Node](#1786-number-of-restricted-paths-from-first-to-last-node)
   - [2039. The Time When the Network Becomes Idle](#2039-the-time-when-the-network-becomes-idle)
+- [Day 6](#day-6)
+  - [2497. Maximum Star Sum of a Graph](#2497-maximum-star-sum-of-a-graph)
+  - [959. Regions Cut By Slashes](#959-regions-cut-by-slashes)
 
 
 
@@ -1026,9 +1029,197 @@ public:
 
 <br> 
 
+
+
+# Day 6
+
+## [2497. Maximum Star Sum of a Graph](https://leetcode.com/problems/maximum-star-sum-of-a-graph/) 
+
+> There is an undirected graph consisting of n nodes numbered from 0 to n - 1. You are given a 0-indexed integer array vals of length n where vals[i] denotes the value of the ith node.
+You are also given a 2D integer array edges where edges[i] = [ai, bi] denotes that there exists an undirected edge connecting nodes ai and bi.
+A star graph is a subgraph of the given graph having a center node containing 0 or more neighbors. In other words, it is a subset of edges of the given graph such that there exists a common node for all edges.
+The image below shows star graphs with 3 and 4 neighbors respectively, centered at the blue node.
+The star sum is the sum of the values of all the nodes present in the star graph.
+Given an integer k, return the maximum star sum of a star graph containing at most k edges.
+
+<code >Logic</code>
+
+```quote
+
+1 make adj list with node---> vector(values of adjecent nodes)
+2 sort list by decreasing order
+3 count first k nodes sum 
+4 find maximum of such all sums
+
+
+```
+[Code Link](./CodeGraph/06-maximum-sub-start-graph.cpp)
+
+<details><summary>Code</summary>
+
+```cpp
+
+class Solution {
+public:
+   
+    int maxStarSum(vector<int>& vals, vector<vector<int>>& edges, int k) {
+        int n = vals.size();
+        vector<int> adj[n]; 
+        for(auto i : edges){
+            int u = i[0] , v = i[1];
+            adj[u].push_back(vals[v]);
+            adj[v].push_back(vals[u]);
+        }
+        int ans = -1e9;
+        for(int i = 0; i< n ; i++){
+            sort(adj[i].begin() , adj[i].end() , greater<int>());
+            int ctr = vals[i];
+            int sz = adj[i].size();
+            for(int j = 0; j < min(sz , k) ; j++){
+                ans = max(ans , ctr);
+                int node = adj[i][j];
+                ctr+= node;
+            }
+            ans = max(ans , ctr);
+        }
+        return ans;
+    }
+};
+
+```
+</details>
+
+<br> 
+
+
+
+## [959. Regions Cut By Slashes](https://leetcode.com/problems/regions-cut-by-slashes/) 
+
+> An n x n grid is composed of 1 x 1 squares where each 1 x 1 square consists of a '/', '\', or blank space ' '. These characters divide the square into contiguous regions.
+Given the grid grid represented as a string array, return the number of regions.
+Note that backslash characters are escaped, so a '\' is represented as '\\'.
+
+ 
+
+<code >Logic</code>
+
+```quote
+
+1. Think of slash as edge with end point 
+2. represet matrix with dots at every intersection
+3. for n cells we have n+1 dots
+4. closed reagion is 1 rigion
+    if we add another close cycle we increase no 
+    of regions by 1
+5. so just do DSU if already edge found then we 
+    form a cycle increase count by 1
+6. initialyy all boundy edges are connected
+7. forward slash have points  (i+1 , j ) and (i , j +1 )
+8. backward slash ahve point (i , j ) and (i + 1 , j + 1)
+9. Represent point as node (i*m + j ) each point
+
+
+```
+[Code Link](./CodeGraph/06-regions-cut-by-slashes.cpp)
+
+<details><summary>Code</summary>
+
+```cpp
+
+class DSU{
+    public:
+    vector<int> parent , rank;
+    DSU(int n ){
+        parent.resize(n , 0);
+        iota(parent.begin() , parent.end() , 0); 
+        rank.resize(n , 0);
+    }
+
+    int findPar(int x){
+        if(parent[x] == x )return x;
+        return parent[x] = findPar(parent[x]);
+    }
+
+
+    void uniteByRank(int x , int y ){
+        int parX = findPar(x);
+        int parY = findPar(y);
+
+        if(parX != parY){
+            if(rank[parX] == rank[parY]){
+                rank[parX]++;
+                parent[parX] = parY;
+            }else if(rank[parX] < rank[parY]){
+                parent[parX] = parY;
+            }else{
+                parent[parY] = parY;
+            }
+        }
+    }
+};
+
+
+class Solution {
+public:
+    int regionsBySlashes(vector<string>& grid) {
+        int n = grid.size();
+        int dot = n + 1;
+        DSU dsu(dot * dot + 1);
+        for(int i = 0; i < dot ; i++){
+            for(int j = 0; j < dot ; j++){
+                if(i == 0 || j == 0 || i == dot-1 || j == dot-1 ){
+                        int cellno=i*dot+j;
+                        if(cellno!=0)
+                        dsu.uniteByRank(0,cellno);
+                }
+            }
+        }
+        cout<<endl;
+        int ans = 1;
+        
+        for(int i = 0 ;i < n; i++){
+            for(int j = 0; j < n ; j++){
+                 if(grid[i][j] == '/'){
+                     int a = dot*(i +1)  + j;
+                     int b = dot*(i) + j+1;
+
+                     int px = dsu.findPar(a);
+                     int py = dsu.findPar(b);
+                     if(px == py)ans++;
+                     dsu.uniteByRank(px , py);
+                 }else if( grid[i][j] == '\\'){
+                     int a = dot*(i)  + j;
+                     int b = dot*(i+1) + j+1;
+                     int px = dsu.findPar(a);
+                     int py = dsu.findPar(b);
+                     if(px == py)ans++;
+                    dsu.uniteByRank(px , py);
+                 }
+            }
+           
+        }
+        return ans;
+    }
+};
+
+// [0 1 2 3 ]
+// [4 5 6 7 ]
+// [8 9 10 11]
+// [12 13 14 15]
+
+
+
+// i*m + j
+
+```
+</details>
+
+<br> 
+
+
 <!-- 
 
-# Day 5
+# Day 7
 
 ## []() 
 
@@ -1052,5 +1243,6 @@ Code
 ```
 </details>
 
-<br>  -->
+<br> 
 
+a -->
