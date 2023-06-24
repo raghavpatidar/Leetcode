@@ -49,6 +49,8 @@
 - [Day 15](#day-15)
   - [139. Word Break](#139-word-break)
   - [140. Word Break II](#140-word-break-ii)
+- [Day 16](#day-16)
+  - [2746. Decremental String Concatenation](#2746-decremental-string-concatenation)
 
 
 
@@ -2066,8 +2068,93 @@ public:
 
 <br> 
 
-<!-- 
+
 # Day 16
+## [2746. Decremental String Concatenation](https://leetcode.com/problems/decremental-string-concatenation/description/) 
+
+> You are given a 0-indexed array words containing n strings.
+Let's define a join operation join(x, y) between two strings x and y as concatenating them into xy. However, if the last character of x is equal to the first character of y, one of them is deleted.
+For example join("ab", "ba") = "aba" and join("ab", "cde") = "abcde".
+You are to perform n - 1 join operations. Let str0 = words[0]. Starting from i = 1 up to i = n - 1, for the ith operation, you can do one of the following:
+Make stri = join(stri - 1, words[i])
+Make stri = join(words[i], stri - 1)
+Your task is to minimize the length of strn - 1.
+Return an integer denoting the minimum possible length of strn - 1.
+
+<code >Logic</code>
+
+```quote
+
+2 Case Add to front of Add to back
+Case1: Add to front
+let say last used string is "aaabccc"
+so prevFron is a and prevBack is c
+at curr index we have word = "cbbb"
+so for currFront = c which is just words[idx][0]
+and currBack = b which is words[idx].back()
+condition to adding to front is currFront == prevBack
+if condition true we can add word.size() -1 ;
+otherwise complete word.size()
+Case2: Similary we can Add to Back
+- condition --> currBakc == prevFron
+- ifTrue --->add words.size()-1
+- esle --> add words.size()
+Approach
+Using DP approach
+DP State --> dp[idx][prevFront][prevBack]
+
+Complexity
+Time complexity:
+O(N*26*26)
+
+Space complexity:
+O(N*26*26)
+
+```
+[Code Link](./16-decrement-string-concatation.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    int solve(int idx  , char prevfront , char prevback , vector<string>& words , vector<vector<vector<int>>> &dp ){
+        // cout<<idx<<" "<<prevfront<<" "<<prevback<<endl;
+        if(idx == words.size())return 0;
+        
+        if(idx == 0 ){
+            return words[0].size() +  solve(idx +1 , words[idx][0] , words[idx].back() ,words , dp);
+        }
+        
+        if(dp[idx][prevfront -'a'][prevback -'a'] != -1)return dp[idx][prevfront -'a'][prevback -'a'] ;
+        
+        //add front
+        int front =  words[idx].size()  + solve(idx +1 , words[idx][0] , prevback ,words , dp);
+        if(words[idx].back() == prevfront){
+            front--;
+        }
+        int back = words[idx].size() + solve(idx + 1 , prevfront , words[idx].back() , words , dp);
+        if(words[idx][0] == prevback){
+            back--;
+        }
+        return dp[idx][prevfront -'a'][prevback -'a'] =  min(front , back);
+    }
+    int minimizeConcatenatedLength(vector<string>& words) {
+        int n= words.size();
+        vector<vector<vector<int>>> dp(n+1 , vector<vector<int>> (30 , vector<int>(30 , -1)));
+        return solve(0 , '_' , '_' , words , dp);
+    } 
+};
+
+
+```
+</details>
+
+<br> 
+
+<!-- 
+# Day 1
 ## []() 
 
 > Statement
@@ -2087,5 +2174,5 @@ Code
 </details>
 
 <br> 
-
  -->
+

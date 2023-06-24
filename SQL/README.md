@@ -54,6 +54,9 @@
 - [Day 17](#day-17)
   - [1280. Students and Examinations](#1280-students-and-examinations)
   - [1327. List the Products Ordered in a Period](#1327-list-the-products-ordered-in-a-period)
+- [Day 18](#day-18)
+  - [1378. Replace Employee ID With The Unique Identifier](#1378-replace-employee-id-with-the-unique-identifier)
+  - [1407. Top Travellers](#1407-top-travellers)
 
 
 # Day 1
@@ -1938,7 +1941,117 @@ having sum(o.unit) >= 100
 </br>
 </br>
  
-<!-- # Day 18
+# Day 18
+
+## [1378. Replace Employee ID With The Unique Identifier](https://leetcode.com/problems/replace-employee-id-with-the-unique-identifier/)
+
+> Write an SQL query to show the unique ID of each user, If a user does not have a unique ID replace just show null.
+Return the result table in any order.
+The query result format is in the following example.
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Employees
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| id            | int     |
+| name          | varchar |
++---------------+---------+
+id is the primary key for this table.
+Each row of this table contains the id and the name of an employee in a company.
+
+
+Table: EmployeeUNI
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| id            | int     |
+| unique_id     | int     |
++---------------+---------+
+(id, unique_id) is the primary key for this table.
+Each row of this table contains the id and the corresponding unique id of an employee in the company.
+
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+SELECT eu.unique_id , e.name 
+FROM employees e 
+LEFT JOIN employeeUNI eu 
+ON e.id = eu.id
+
+```
+</br>
+
+## [1407. Top Travellers](https://leetcode.com/problems/top-travellers/)
+
+> Write an SQL query to report the distance traveled by each user.
+Return the result table ordered by travelled_distance in descending order, if two or more users traveled the same distance, order them by their name in ascending order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Users
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| id            | int     |
+| name          | varchar |
++---------------+---------+
+id is the primary key for this table.
+name is the name of the user.
+ 
+
+Table: Rides
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| id            | int     |
+| user_id       | int     |
+| distance      | int     |
++---------------+---------+
+id is the primary key for this table.
+user_id is the id of the user who traveled the distance "distance".
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+
+SELECT u.name , IFNULL(SUM(r.distance), 0) as travelled_distance
+FROM users u
+LEFT JOIN Rides r
+ON u.id = r.user_id 
+GROUP BY u.id
+ORDER BY travelled_distance DESC , name
+
+
+
+
+
+```
+</br>
+</br>
+ 
+<!-- # Day 19
 
 ## [Question]()
 
