@@ -24,6 +24,8 @@
 - [Day 6](#day-6)
   - [2497. Maximum Star Sum of a Graph](#2497-maximum-star-sum-of-a-graph)
   - [959. Regions Cut By Slashes](#959-regions-cut-by-slashes)
+- [Day 7](#day-7)
+  - [332. Reconstruct Itinerary](#332-reconstruct-itinerary)
 
 
 
@@ -1217,6 +1219,100 @@ public:
 <br> 
 
 
+
+
+# Day 7
+
+## [332. Reconstruct Itinerary](https://leetcode.com/problems/reconstruct-itinerary/) 
+
+> You are given a list of airline tickets where tickets[i] = [fromi, toi] represent the departure and the arrival airports of one flight. Reconstruct the itinerary in order and return it.
+All of the tickets belong to a man who departs from "JFK", thus, the itinerary must begin with "JFK". If there are multiple valid itineraries, you should return the itinerary that has the smallest lexical order when read as a single string.
+For example, the itinerary ["JFK", "LGA"] has a smaller lexical order than ["JFK", "LGB"].
+You may assume all tickets form at least one valid itinerary. You must use all the tickets once and only once.
+
+ 
+
+<code >Logic</code>
+
+```quote
+
+1. hash string to id and revrse hash also to id to string 
+2. make adjecency list then sort according to string 
+3. euler path find 
+4. do dfs and add vertext only when we have complete all child visit 
+5. reverse the path array and create ans with id to string from path and then return 
+
+```
+[Code Link](./CodeGraph/07-reconstruct-Itinerary.cpp)
+
+<details><summary>Code</summary>
+
+```cpp
+
+class Solution {
+public:
+    
+    void dfs(int node , vector<int> adj[] ,vector<int>&path , map<pair<int,int> , int > &mp , vector<int>out){
+        for(auto i : adj[node]){
+            if( mp.find({node , i}) != mp.end() and mp[{node, i}] > 0 ){
+                mp[{node , i }]--;
+                out[i]--;
+                dfs(i , adj  , path , mp,out);
+            }
+        }
+        path.push_back(node);
+    }
+    vector<string> findItinerary(vector<vector<string>>& tickets) {
+        map<string,int> hash ;
+        map<int, string> reverseHash;
+        int id = 1;
+        hash["JFK"] = 0;
+        reverseHash[0] = "JFK";
+        for(auto i : tickets){
+            if(hash.find(i[0]) == hash.end()){
+                hash[i[0]] = id;
+                reverseHash[id] = i[0];
+                id++;
+            }
+            if(hash.find(i[1]) == hash.end()){
+                hash[i[1]] = id;
+                reverseHash[id] = i[1];
+                id++;
+            }
+        }
+        int n = hash.size();
+        vector<int>out(n , 0);
+        vector<int> adj[n];
+        map<pair<int,int> , int  > mp;
+        for(auto i : tickets){
+            int u = hash[i[0]];
+            int v = hash[i[1]];
+            adj[u].push_back(v);
+            out[u]++;
+            mp[{u , v}]++;
+        }
+        for(int i = 0; i < n ; i++){
+            sort(adj[i].begin() , adj[i].end() , [&](const int & a, const int & b){  return reverseHash[a] < reverseHash[b];});
+        }
+
+        vector<int> path , vis(n , 0);
+        vector<string> ans;
+        dfs(0 , adj  , path , mp , out);
+        for(auto i : path){
+           ans.push_back(reverseHash[i]);
+        }
+        reverse(ans.begin() , ans.end());
+        return ans;
+
+    }
+};
+
+```
+</details>
+
+<br> 
+
+
 <!-- 
 
 # Day 7
@@ -1245,4 +1341,4 @@ Code
 
 <br> 
 
-a -->
+ -->

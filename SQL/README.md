@@ -57,6 +57,18 @@
 - [Day 18](#day-18)
   - [1378. Replace Employee ID With The Unique Identifier](#1378-replace-employee-id-with-the-unique-identifier)
   - [1407. Top Travellers](#1407-top-travellers)
+- [Day 19](#day-19)
+  - [1484. Group Sold Products By The Date](#1484-group-sold-products-by-the-date)
+  - [1517. Find Users With Valid E-Mails](#1517-find-users-with-valid-e-mails)
+- [Day 20](#day-20)
+  - [1527. Patients With a Condition](#1527-patients-with-a-condition)
+  - [1581. Customer Who Visited but Did Not Make Any Transactions](#1581-customer-who-visited-but-did-not-make-any-transactions)
+- [Day 21](#day-21)
+  - [1587. Bank Account Summary II](#1587-bank-account-summary-ii)
+  - [1633. Percentage of Users Attended a Contest](#1633-percentage-of-users-attended-a-contest)
+- [Day 22](#day-22)
+  - [1661. Average Time of Process per Machine](#1661-average-time-of-process-per-machine)
+  - [1667. Fix Names in a Table](#1667-fix-names-in-a-table)
 
 
 # Day 1
@@ -2051,7 +2063,405 @@ ORDER BY travelled_distance DESC , name
 </br>
 </br>
  
-<!-- # Day 19
+# Day 19
+
+## [1484. Group Sold Products By The Date](https://leetcode.com/problems/group-sold-products-by-the-date/)
+
+> Write an SQL query to find for each date the number of different products sold and their names.
+The sold products names for each date should be sorted lexicographically.
+Return the result table ordered by sell_date.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| sell_date   | date    |
+| product     | varchar |
++-------------+---------+
+There is no primary key for this table, it may contain duplicates.
+Each row of this table contains the product name and the date it was sold in a market.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+
+SELECT 
+  sell_date , 
+  COUNT(distinct product) AS num_sold,
+  GROUP_CONCAT(DISTINCT product ORDER BY product )  AS products
+FROM 
+  Activities 
+GROUP BY 
+  sell_date
+ORDER BY 
+  sell_date
+
+
+```
+</br>
+
+
+## [1517. Find Users With Valid E-Mails](https://leetcode.com/problems/find-users-with-valid-e-mails/)
+
+> Write an SQL query to find the users who have valid emails.
+A valid e-mail has a prefix name and a domain where:
+The prefix name is a string that may contain letters (upper or lower case), digits, underscore '_', period '.', and/or dash '-'. The prefix name must start with a letter.
+The domain is '@leetcode.com'.
+Return the result table in any order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| user_id       | int     |
+| name          | varchar |
+| mail          | varchar |
++---------------+---------+
+user_id is the primary key for this table.
+This table contains information of the users signed up in a website. Some e-mails are invalid.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+SELECT *
+FROM Users
+WHERE REGEXP_LIKE(mail , '^[a-zA-Z][a-zA-Z0-9_.-]*@leetcode[.]com')
+
+```
+</br>
+</br>
+ 
+# Day 20
+
+## [1527. Patients With a Condition](https://leetcode.com/problems/patients-with-a-condition/)
+
+> Write an SQL query to report the patient_id, patient_name and conditions of the patients who have Type I Diabetes. Type I Diabetes always starts with DIAB1 prefix.
+Return the result table in any order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| patient_id   | int     |
+| patient_name | varchar |
+| conditions   | varchar |
++--------------+---------+
+patient_id is the primary key for this table.
+'conditions' contains 0 or more code separated by spaces. 
+This table contains information of the patients in the hospital.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+
+select * from patients 
+where conditions like 'DIAB1%' or conditions like '% DIAB1%';
+
+```
+</br>
+
+
+## [1581. Customer Who Visited but Did Not Make Any Transactions](https://leetcode.com/problems/customer-who-visited-but-did-not-make-any-transactions/)
+
+>  Write a SQL query to find the IDs of the users who visited without making any transactions and the number of times they made these types of visits.
+Return the result table sorted in any order.
+The query result format is in the following example.
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Visits
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| visit_id    | int     |
+| customer_id | int     |
++-------------+---------+
+visit_id is the primary key for this table.
+This table contains information about the customers who visited the mall.
+
+Table: Transactions
+
++----------------+---------+
+| Column Name    | Type    |
++----------------+---------+
+| transaction_id | int     |
+| visit_id       | int     |
+| amount         | int     |
++----------------+---------+
+transaction_id is the primary key for this table.
+This table contains information about the transactions made during the visit_id.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+Select v.customer_id , count(v.customer_id) as count_no_trans 
+from visits as v
+where v.visit_id  not in( select t.visit_id from transactions as t)
+group by v.customer_id 
+
+```
+</br>
+</br>
+ 
+# Day 21
+
+## [1587. Bank Account Summary II](https://leetcode.com/problems/bank-account-summary-ii/)
+
+> Write an SQL query to report the name and balance of users with a balance higher than 10000. The balance of an account is equal to the sum of the amounts of all transactions involving that account.
+Return the result table in any order.
+The query result format is in the following example 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+SQL Schema
+Table: Users
+
++--------------+---------+
+| Column Name  | Type    |
++--------------+---------+
+| account      | int     |
+| name         | varchar |
++--------------+---------+
+account is the primary key for this table.
+Each row of this table contains the account number of each user in the bank.
+There will be no two users having the same name in the table.
+ 
+
+Table: Transactions
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| trans_id      | int     |
+| account       | int     |
+| amount        | int     |
+| transacted_on | date    |
++---------------+---------+
+trans_id is the primary key for this table.
+Each row of this table contains all changes made to all accounts.
+amount is positive if the user received money and negative if they transferred money.
+All accounts start with a balance of 0.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+
+select u.name as NAME, sum(t.amount) as BALANCE
+from users u
+inner join transactions t
+on u.account = t.account
+group by t.account 
+having sum(t.amount) >10000
+
+```
+</br>
+
+
+## [1633. Percentage of Users Attended a Contest](https://leetcode.com/problems/percentage-of-users-attended-a-contest/)
+
+> Write an SQL query to find the percentage of the users registered in each contest rounded to two decimals.
+Return the result table ordered by percentage in descending order. In case of a tie, order it by contest_id in ascending order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Users
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| user_id     | int     |
+| user_name   | varchar |
++-------------+---------+
+user_id is the primary key for this table.
+Each row of this table contains the name and the id of a user.
+ 
+
+Table: Register
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| contest_id  | int     |
+| user_id     | int     |
++-------------+---------+
+(contest_id, user_id) is the primary key for this table.
+Each row of this table contains the id of a user and the contest they registered into.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+select
+  contest_id , 
+  Round((count(user_id) / (select count(user_id) from users))*100 , 2) as percentage
+from register
+group by contest_id
+order by percentage desc , contest_id 
+
+```
+</br>
+</br>
+
+# Day 22
+
+## [1661. Average Time of Process per Machine](https://leetcode.com/problems/average-time-of-process-per-machine/)
+
+> There is a factory website that has several machines each running the same number of processes. Write an SQL query to find the average time each machine takes to complete a process.
+The time to complete a process is the 'end' timestamp minus the 'start' timestamp. The average time is calculated by the total time to complete every process on the machine divided by the number of processes that were run.
+The resulting table should have the machine_id along with the average time as processing_time, which should be rounded to 3 decimal places.
+Return the result table in any order.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Activity
+
++----------------+---------+
+| Column Name    | Type    |
++----------------+---------+
+| machine_id     | int     |
+| process_id     | int     |
+| activity_type  | enum    |
+| timestamp      | float   |
++----------------+---------+
+The table shows the user activities for a factory website.
+(machine_id, process_id, activity_type) is the primary key of this table.
+machine_id is the ID of a machine.
+process_id is the ID of a process running on the machine with ID machine_id.
+activity_type is an ENUM of type ('start', 'end').
+timestamp is a float representing the current time in seconds.
+'start' means the machine starts the process at the given timestamp and 'end' means the machine ends the process at the given timestamp.
+The 'start' timestamp will always be before the 'end' timestamp for every (machine_id, process_id) pair
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+with cte AS (
+    select 
+      a.machine_id  ,
+      a.process_id  , 
+      (a.timestamp - b.timestamp) as timediff
+    from activity a
+    inner join activity b
+    on (
+      a.machine_id = b.machine_id
+        and 
+      a.process_id = b.process_id 
+        and 
+      a.activity_type = 'end' 
+        and 
+      b.activity_type ='start')
+)
+
+select 
+    machine_id , 
+    ROUND(AVG(timediff),3) as processing_time 
+from cte 
+group by machine_id 
+
+```
+</br>
+
+
+## [1667. Fix Names in a Table](https://leetcode.com/problems/fix-names-in-a-table/)
+
+> Write an SQL query to fix the names so that only the first character is uppercase and the rest are lowercase.
+Return the result table ordered by user_id.
+The query result format is in the following example. 
+
+ 
+<details>
+<summary>Schema</summary>
+
+```sql
+
+Table: Users
+
++----------------+---------+
+| Column Name    | Type    |
++----------------+---------+
+| user_id        | int     |
+| name           | varchar |
++----------------+---------+
+user_id is the primary key for this table.
+This table contains the ID and the name of the user. The name consists of only lowercase and uppercase characters.
+
+```
+</details>
+<code >Query</code>
+
+```sql
+
+
+select 
+  user_id,
+  CONCAT(
+        UPPER(LEFT(name , 1)),
+        LOWER(RIGHT(name, LENGTH(name)-1))
+      ) as name 
+from users 
+order by user_id
+
+```
+</br>
+</br>
+ 
+<!-- # Day 23
 
 ## [Question]()
 

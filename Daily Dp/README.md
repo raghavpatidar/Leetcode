@@ -51,6 +51,10 @@
   - [140. Word Break II](#140-word-break-ii)
 - [Day 16](#day-16)
   - [2746. Decremental String Concatenation](#2746-decremental-string-concatenation)
+- [Day 17](#day-17)
+  - [1147. Longest Chunked Palindrome Decomposition](#1147-longest-chunked-palindrome-decomposition)
+- [Day 18](#day-18)
+  - [1575. Count All Possible Routes](#1575-count-all-possible-routes)
 
 
 
@@ -2153,8 +2157,147 @@ public:
 
 <br> 
 
+
+# Day 17
+## [1147. Longest Chunked Palindrome Decomposition](https://leetcode.com/problems/longest-chunked-palindrome-decomposition/) 
+
+> You are given a string text. You should split it to k substrings (subtext1, subtext2, ..., subtextk) such that:
+subtexti is a non-empty string.
+The concatenation of all the substrings is equal to text (i.e., subtext1 + subtext2 + ... + subtextk == text).
+subtexti == subtextk - i + 1 for all valid values of i (i.e., 1 <= i <= k).
+Return the largest possible value of k.
+
+<code >Logic</code>
+
+```quote
+
+1. start from both end
+2. use MCM logic find all matching string from start and end then check
+3. is valid then find subproblem
+4. return optimal of all
+
+```
+[Code Link](./17-longest-palindrome-chuncked-decomposition.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+
+   bool check(string &a , string &b){
+       for(int i = 0; i < a.size();i++){
+           if(a[i] != b[b.size() -1 - i ])return false;
+       }
+       return true;
+   }
+
+    int solve(int i , int j , string &s ,vector<vector<int>>&dp){
+        if(i > j)return 0;
+        if(i == j )return 1;
+        if(dp[i][j] != -1){
+            return dp[i][j];
+        }
+        string a = "" ,  b = "";
+        int l = i , r = j;
+        int range = j - i + 1;
+        int sub = 0;
+        // bool ok = false;
+        // cout<<i<<" "<<j<<endl;
+        while(l <= r){
+             a.push_back(s[l]);
+             b.push_back(s[r]);
+             l++ , r--;
+            //  cout<<a<<" - "<< b<<endl;
+             if( check(a , b) ){
+                //  ok = true;
+                // cout<<a<<" in "<< b<<endl;
+                 int pos = a.size();
+                 int x = a.size() == range ? 1 : 2;
+                sub = max(sub ,  x + solve(i + pos , j - pos , s , dp));
+             }
+        }
+        // cout<<endl;
+
+        return dp[i][j] =  max(sub , 1);
+
+        
+
+    }
+    int longestDecomposition(string text) {
+        vector<vector<int>> dp(text.size()+1 , vector<int>(text.size()+1 , -1) );
+        return solve(0 , text.size()-1 , text , dp);
+    }
+};
+
+```
+</details>
+
+<br> 
+
+
+# Day 18
+## [1575. Count All Possible Routes](https://leetcode.com/problems/count-all-possible-routes/) 
+
+> You are given an array of distinct positive integers locations where locations[i] represents the position of city i. You are also given integers start, finish and fuel representing the starting city, ending city, and the initial amount of fuel you have, respectively.
+At each step, if you are at city i, you can pick any city j such that j != i and 0 <= j < locations.length and move to city j. Moving from city i to city j reduces the amount of fuel you have by |locations[i] - locations[j]|. Please notice that |x| denotes the absolute value of x.
+Notice that fuel cannot become negative at any point in time, and that you are allowed to visit any city more than once (including start and finish).
+Return the count of all possible routes from start to finish. Since the answer may be too large, return it modulo 109 + 7.
+
+<code >Logic</code>
+
+```quote
+
+1. use dp to count all possible routes
+2. visite if not visited otherwise add it's dp state and return
+
+
+```
+[Code Link](./18-count-all-routes.cpp)
+
+<details><summary>code</summary>
+
+```cpp
+
+class Solution {
+public:
+    const int MOD = 1000000007;
+
+    int helper(const vector<int>& locations, int city, int finish, int remainFuel, vector<vector<int>>& memo) {
+        if (remainFuel < 0) {
+            return 0;
+        }
+        
+        if (memo[city][remainFuel] != -1) {
+            return memo[city][remainFuel];
+        }
+        
+        int total = city == finish ? 1 : 0;
+        
+        for (int nextCity = 0; nextCity < locations.size(); nextCity++) {
+            if (nextCity != city && remainFuel >= abs(locations[nextCity] - locations[city])) {
+                total = (total + helper(locations, nextCity, finish, remainFuel - abs(locations[nextCity] - locations[city]), memo)) % MOD;
+            }
+        }
+        
+        return memo[city][remainFuel] = total;
+    }
+
+    int countRoutes(vector<int>& locations, int start, int finish, int fuel) {
+        int n = locations.size();
+        vector<vector<int>> memo(n, vector<int>(fuel + 1, -1));
+        return helper(locations, start, finish, fuel, memo);
+    }
+};
+
+```
+</details>
+
+<br> 
+
 <!-- 
-# Day 1
+# Day 19
 ## []() 
 
 > Statement
@@ -2173,6 +2316,6 @@ Code
 ```
 </details>
 
-<br> 
- -->
+<br>  -->
+
 
